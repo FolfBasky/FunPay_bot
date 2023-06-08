@@ -1,0 +1,636 @@
+import asyncio
+import os
+from aiogram import Bot, Dispatcher, executor, types
+import logging
+from aiogram.contrib.fsm_storage.memory import MemoryStorage
+from aiogram.dispatcher import FSMContext
+from aiogram.dispatcher.filters.state import State, StatesGroup
+
+from sql import *
+from vk import *
+from funpay import *
+from coords import *
+from data import kef
+
+bot = Bot(token="5571779165:AAFC8iMTKtS3PHR65IxIEqaB8R7KmbdN_YE")
+admin_chat_id = -778858479
+dp = Dispatcher(bot, storage=MemoryStorage())
+logging.basicConfig(filename='log.txt',filemode='w',level=logging.INFO)
+
+async def posting(message: types.Message):
+    links = [x for x in groups().keys()]  
+    for link in links:
+        post(link)
+        await message.answer(f'In {link} was succesfully post created')
+
+keyboard_vk = types.ReplyKeyboardMarkup(resize_keyboard=True)
+keyboard_tor = types.ReplyKeyboardMarkup(resize_keyboard=True)
+keyboard_main = types.ReplyKeyboardMarkup(resize_keyboard=True)
+yes_no = types.ReplyKeyboardMarkup(resize_keyboard=True)
+
+keyboard_vk.add(*["/get_vk_profiles","/add_account_vk","/delete_vk_profile","/set_vk_profile","/clear_groups","/post","/create_groupes", "/kill_admins_vk","/main","/tor"])
+keyboard_tor.add(*["/start_tor","/check_message","/check_sales", "/refund_orders","/check_orders", "/complete_orders","/send_message","/create_slots","/delete_slots","/edit_lot","/check_lots","/get_balance","/check_balance_operations","/withdrow_balance", "/cancel_operations_balances","/up","/auto","/check_ip","/check_feedbacks","/logout","/main","/vk"])
+keyboard_main.add(*["/start","/info","/change_kef","/get_account", "/add_account","/edit_account","/delete_account","/vk","/tor"])
+yes_no.add(*["Y","N"])
+
+
+def change_k(new_kef):
+    with open('data.py') as a:
+        data = a.read()
+    with open('data.py','w') as a:
+        a.write('kef = ' + str(new_kef) + '\n' + '\n'.join(data.split('\n')[1:]))
+
+class Kef_states(StatesGroup):
+    enter_kef = State()
+
+async def change_kef(message: types.Message):
+    await message.answer('Enter new kef')
+    await Kef_states.enter_kef.set()
+
+@dp.message_handler(lambda message: message.text.replace('.','').isdigit(), state=Kef_states.enter_kef) 
+async def cmd(message: types.Message, state: FSMContext):
+    change_k(message.text)
+    global kef
+    kef = float(message.text)
+    await message.answer('Was done')
+    await state.finish()
+
+@dp.message_handler(state = Kef_states.enter_kef)
+async def cmd(message: types.Message, state: FSMContext):
+    await message.answer('Not correct answer!')
+    await state.finish()
+
+async def clear_groups(message: types.Message):
+    group = [x for x in groups().keys()]  
+    a = lock_all(group)
+    if a != None:
+        await message.answer(a)
+
+class Start_states(StatesGroup):
+    choice = State()
+
+async def start(message: types.Message):
+    if message.chat.id == admin_chat_id:
+        keyboard1= types.ReplyKeyboardMarkup(resize_keyboard=True)
+        keyboard1.add('Y','N')
+        await message.answer(f'Hi, {message.from_user.full_name} \nStart Tor?(Y/N)', reply_markup=yes_no)
+        await Start_states.choice.set()
+
+@dp.message_handler(lambda message: 'Y' == (message.text).upper(), state = Start_states.choice)
+async def cmd(message: types.Message, state: FSMContext):
+    await message.answer('Conecting...')
+    res = logging_()
+    if res == None:
+        await message.reply('Session is active',reply_markup=keyboard_tor)
+    else:
+        await message.reply(res, reply_markup=keyboard_main)
+    await state.finish()
+
+@dp.message_handler(lambda message: 'N' == (message.text).upper(), state = Start_states.choice)
+async def cmd(message: types.Message, state: FSMContext):
+    await message.reply('Session was not started!',reply_markup=keyboard_tor)
+    await state.finish()
+
+@dp.message_handler(state = Start_states.choice)
+async def cmd(message: types.Message, state: FSMContext):
+    await message.answer('Not correct answer!', reply_markup=keyboard_tor)
+    await state.finish()
+
+@dp.message_handler(commands='logout')
+async def logouting(message: types.Message):
+    global auto_while
+    auto_while = False
+    res = logout()
+    if res[0]: await message.answer('Succesfull')
+    else: await message.answer('Failed!\n{}'.format(res[1]))
+
+async def vk_keys(message: types.Message):
+    await message.answer('VK module', reply_markup=keyboard_vk)
+    #await message.answer(message.chat.id)
+
+async def tor_keys(message: types.Message):
+    await message.answer('TOR module', reply_markup=keyboard_tor)
+
+async def main_page(message: types.Message):
+    await message.answer('main page', reply_markup=keyboard_main)
+
+async def check_message(message: types.Message):
+    result = collect_chats()
+    for x in result[:3]:
+        await message.answer('\n'.join(check_messages(x[2])))
+        await message.answer(x[2])
+        await message.answer('#'*20)
+        await asyncio.sleep(1) 
+
+class Msg_states(StatesGroup):
+    link = State()
+    text = State()
+
+async def send_message(message: types.Message, state: FSMContext):
+    await message.answer('Enter link')
+    await Msg_states.link.set()
+
+@dp.message_handler(lambda message: 'https://funpay.com/chat/' in message.text, state=Msg_states.link)
+async def cmd(message: types.Message, state: FSMContext):
+    async with state.proxy() as data:
+        data['link'] = message.text
+    await message.answer('Enter text')
+    await Msg_states.text.set()
+
+@dp.message_handler(lambda message: 'https://funpay.com/chat/' not in message.text, state=Msg_states.link)
+async def cmd(message: types.Message, state: FSMContext):
+    await message.answer('Not correct link!', reply_markup=keyboard_tor)
+    await state.finish()
+
+@dp.message_handler(lambda message: 'cancel' not in message.text.lower() and '/send_message' not in message.text.lower(), state=Msg_states.text)
+async def cmd(message: types.Message, state: FSMContext):
+    async with state.proxy() as data:
+        link = data['link']
+        text = message.text
+    try:
+        res = message_answer_r(link,text)
+        await message.answer(res)
+    except Exception as res:
+        await message.answer(res)
+    await state.finish()
+
+@dp.message_handler(lambda message: '/cancel' in message.text or '/send_message' in message.text.lower(), state=Msg_states.text)
+async def cmd(message: types.Message, state: FSMContext):
+    await message.answer('Canceled!', reply_markup=keyboard_tor)
+    await state.finish()
+
+async def up(message: types.Message):
+    await message.answer(up_lots())
+
+async def auto(message: types.Message):
+    storage_last_message = []
+    global auto_while
+    auto_while = True
+    while auto_while:
+        lst = up_lots()
+        if 'Slot' in lst: await message.answer(lst)
+        elif 'Fail' == lst:
+            await message.answer('Session was down\nWaiting...')
+            logging_()
+            await message.answer('Session is working')
+        last_msgs = collect_chats()[:5]
+        for x in last_msgs:
+            if x[1] in storage_last_message:
+                break
+            else:
+                storage_last_message.append(x[1])
+                await message.answer(f'{x[2]} : {x[0]}')
+                await message.answer(x[1])
+                await message.answer('#'*20)
+        await asyncio.sleep(60)
+
+async def create_slotes(message: types.Message):
+
+    await message.answer(create_lot())
+
+async def delete_slotes(message: types.Message):
+    await message.answer(delete_slots())
+
+async def create_groupes(message: types.Message):
+    for _ in range(5):
+        r =  create_groups()
+        if r == 'Was fail': await message.answer('Was fail')
+    else: await message.answer('Succesfull')
+
+async def off_pc(message:types.Message):
+    await message.delete()
+    os.system('shutdown /s')
+    os.system('shutdown /f')
+
+async def info(message:types.Message):
+    res = groups()
+    await message.answer(f'{len(res)} groups find (id:subscribers): {res}\nAbout {round(sum(list(res.values()))/10*kef)} rub')
+
+async def check_sales(message: types.Message):
+    for x in check_orders_or_sales(sales=True):
+        await message.answer(f'{x[0]} - {x[1]}\n{x[2]}\n{x[3]}\n{x[4]}\n{x[5]}')
+
+async def check_orders(message: types.Message):
+    for x in check_orders_or_sales(sales=False):
+        await message.answer(f'{x[0]} - {x[1]}\n{x[2]}\n{x[3]}\n{x[4]}\n{x[5]}')
+
+async def check_lots(message: types.Message):
+    d = check_lots_r()
+    for x in d.keys():
+        await message.answer(f'{d[x]}\n{x}')
+        await asyncio.sleep(0.5)
+
+class Edit_lot_states(StatesGroup):
+    lot_id = State()
+    deleted = State()
+    followers = State()
+    summary = State()
+    desc = State()
+    price = State()
+
+async def edit_lot(message: types.Message):
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+    markup.add(*[x for x in check_lots_r().keys()], '/cancel')
+    await message.answer('Enter lot id', reply_markup=markup)
+    await Edit_lot_states.lot_id.set()
+
+@dp.message_handler(lambda message: message.text != '/cancel', state=Edit_lot_states.lot_id)
+async def cmd(message: types.Message, state: FSMContext):
+    async with state.proxy() as data:
+        data['offer_id'] = message.text
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+    markup.add(*['0','1'], '/cancel')
+    await message.answer('Enter deleted status', reply_markup=markup)
+    await Edit_lot_states.deleted.set()
+
+@dp.message_handler(lambda message: message.text != '/cancel', state=Edit_lot_states.deleted)
+async def cmd(message: types.Message, state: FSMContext):
+    async with state.proxy() as data:
+        data['deleted'] = message.text
+        if data['deleted'] == '1':
+            await message.answer(edit_lot_r(data['offer_id'], data['deleted']), reply_markup=keyboard_tor)
+            await state.finish()
+        else:
+            await message.answer('Enter count followers')
+            await Edit_lot_states.followers.set()
+
+@dp.message_handler(lambda message: message.text != '/cancel', state=Edit_lot_states.followers)
+async def cmd(message: types.Message, state: FSMContext):
+    async with state.proxy() as data:
+        data['followers'] = message.text
+    await message.answer('Enter summary')
+    await Edit_lot_states.summary.set()
+
+@dp.message_handler(lambda message: message.text != '/cancel', state=Edit_lot_states.summary)
+async def cmd(message: types.Message, state: FSMContext):
+    async with state.proxy() as data:
+        data['summary'] = message.text
+    await message.answer('Enter desc')
+    await Edit_lot_states.desc.set()
+
+@dp.message_handler(lambda message: message.text != '/cancel', state=Edit_lot_states.desc)
+async def cmd(message: types.Message, state: FSMContext):
+    async with state.proxy() as data:
+        data['desc'] = message.text
+    await message.answer('Enter price')
+    await Edit_lot_states.price.set()
+
+@dp.message_handler(lambda message: message.text != '/cancel', state=Edit_lot_states.price)
+async def cmd(message: types.Message, state: FSMContext):
+    async with state.proxy() as data:
+        data['price'] = message.text
+        await message.answer(edit_lot_r(**data._data), reply_markup=keyboard_tor)
+    await state.finish()
+
+@dp.message_handler(commands='cancel', state='*')
+async def cmd(message: types.Message, state: FSMContext):
+    await message.answer('Canceled!', reply_markup=keyboard_tor)
+    await state.finish()
+
+async def check_ip_r(message:types.Message):
+    response = session.get('https://pr-cy.ru/browser-details/')
+    soup = BeautifulSoup(response.text, 'lxml')
+    my_ip = soup.find('div',class_='ip-myip').text
+    await message.answer(f'IP: {my_ip}')
+
+async def get_balance(message:types.Message):
+    await message.answer(get_balance_r())
+
+class Withdrowing_states(StatesGroup):
+    enter_wall = State()
+
+async def withdrow_balance(message:types.Message, state: FSMContext):
+    await message.answer('Enter wallet')
+    await Withdrowing_states.enter_wall.set()
+
+@dp.message_handler( state = Withdrowing_states.enter_wall)
+async def cmd(message: types.Message, state: FSMContext):
+    res = withdrow_money(message.text)
+    await message.answer(res)
+    if res == 'Money was sended!':
+        if not get_first_active_account_info()['card_number']:
+            card = message.text
+            if len(card) == 16 and card.isdigit():
+                add_card_number(get_first_active_account_info()['login'], card)
+    await state.finish()
+
+@dp.message_handler(commands='cancel', state = Withdrowing_states.enter_wall)
+async def cmd(message: types.Message, state: FSMContext):
+    await message.answer('Canceled!', reply_markup=keyboard_tor)
+    await state.finish()
+
+async def check_balance_operations(message:types.Message):
+    for x in check_balance_operation():
+        await message.answer(x)
+
+class Cancel_balance_operation_states(StatesGroup):
+    oper_id = State()
+
+async def cancel_operations_balances(message:types.Message, state: FSMContext):
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+    markup.add(*[x.split('\n')[-1] for x in check_balance_operation()], '/cancel')
+    await message.answer('Enter operation id', reply_markup=markup)
+    await Cancel_balance_operation_states.oper_id.set()
+
+@dp.message_handler( state = Cancel_balance_operation_states.oper_id)
+async def cmd(message: types.Message, state: FSMContext):
+    await message.answer(cancel_balance_operation(message.text), reply_markup=keyboard_tor)
+    await state.finish()
+
+@dp.message_handler(commands='cancel', state = Cancel_balance_operation_states.oper_id)
+async def cmd(message: types.Message, state: FSMContext):
+    await message.answer('Canceled!', reply_markup=keyboard_tor)
+    await state.finish()
+
+class Complete_order_states(StatesGroup):
+    oper_id = State()
+
+async def complete_orders(message: types.Message, state: FSMContext):
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+    markup.add(*[x.split('\n')[-1] for x in check_balance_operation()], '/cancel')
+    await message.answer('Enter oper id', reply_markup=markup)
+    await Complete_order_states.oper_id.set()
+
+@dp.message_handler( state = Complete_order_states.oper_id)
+async def cmd(message: types.Message, state: FSMContext):
+    await message.answer(complete_order(message.text), reply_markup=keyboard_tor)
+    await state.finish()
+
+@dp.message_handler(commands='cancel', state = Complete_order_states.oper_id)
+async def cmd(message: types.Message, state: FSMContext):
+    await message.answer('Canceled!', reply_markup=keyboard_tor)
+    await state.finish()
+
+class Refund_orders_states(StatesGroup):
+    oper_id = State()
+
+async def refund_orders(message: types.Message):
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+    markup.add(*[x.split('\n')[-1] for x in check_balance_operation()], '/cancel')
+    await message.answer('Enter order id', reply_markup=markup)
+    await Refund_orders_states.oper_id.set()
+
+@dp.message_handler( state=Refund_orders_states.oper_id)
+async def cmd(message: types.Message, state: FSMContext):
+    await message.answer(refund_order(message.text), reply_markup=keyboard_tor)
+    await state.finish()
+
+@dp.message_handler(commands='cancel', state=Refund_orders_states.oper_id)
+async def cmd(message: types.Message, state: FSMContext):
+    await message.answer('Canceled!', reply_markup=keyboard_tor)
+    await state.finish()
+
+async def check_feedbacks(message: types.Message):
+    for feedback in check_feedback():
+        await message.answer('\n'.join(feedback))
+        await message.answer('#'*20)
+
+class Funpay_Account_states(StatesGroup):
+    login = State()
+    password = State()
+    number = State()
+    card = State()
+
+async def funpay_account(message: types.Message):
+    await message.answer('Enter login')
+    await Funpay_Account_states.login.set()
+
+@dp.message_handler(state=Funpay_Account_states.login)
+async def cmd(message: types.Message, state: FSMContext):
+    async with state.proxy() as data:
+        data['login'] = message.text
+    await message.answer('Enter password')
+    await Funpay_Account_states.next()
+
+@dp.message_handler(commands='cancel', state=Funpay_Account_states.login)
+async def cmd(message: types.Message, state: FSMContext):
+    await message.answer('Canceled!')
+    await state.finish()
+
+@dp.message_handler( state=Funpay_Account_states.password)
+async def cmd(message: types.Message, state: FSMContext):
+    async with state.proxy() as data:
+        data['password'] = message.text
+    await message.answer('Enter numbers of the phone')
+    await Funpay_Account_states.next()
+
+@dp.message_handler(commands='cancel', state=Funpay_Account_states.password)
+async def cmd(message: types.Message, state: FSMContext):
+    await message.answer('Canceled!')
+    await state.finish()
+
+@dp.message_handler( state=Funpay_Account_states.number)
+async def cmd(message: types.Message, state: FSMContext):
+    async with state.proxy() as data:
+        data['number'] = message.text
+    await message.answer('Enter numbers of the card or /skip')
+    await Funpay_Account_states.next()
+
+@dp.message_handler(commands='cancel', state=Funpay_Account_states.number)
+async def cmd(message: types.Message, state: FSMContext):
+    await message.answer('Canceled!')
+    await state.finish()
+
+@dp.message_handler(lambda message: 'cancel' not in message.text.lower() and '/' not in message.text.lower(), state=Funpay_Account_states.card)
+async def cmd(message: types.Message, state: FSMContext):
+    async with state.proxy() as data:
+        data['card'] = message.text
+        if add_user_profile(1, data['login'], data['password'], data['number'], data['card']):
+            await message.answer('Data was succesfully writed!')
+        else:
+            await message.answer('Something were wrong!')
+    await state.finish()
+
+@dp.message_handler(commands='cancel', state=Funpay_Account_states.card)
+async def cmd(message: types.Message, state: FSMContext):
+    await message.answer('Canceled!')
+    await state.finish()
+
+@dp.message_handler(commands='skip', state=Funpay_Account_states.card)
+async def cmd(message: types.Message, state: FSMContext):
+    await message.answer('Card was skipped!')
+    async with state.proxy() as data:
+        if add_user_profile(1, data['login'], data['password'], data['number']):
+            await message.answer('Data was succesfully writed!')
+        else:
+            await message.answer('Something were wrong!')
+    await state.finish()
+
+async def get_account(message: types.Message):
+    for account in get_all_profiles():
+        await message.answer(f'active: {bool(account["active"])}\nlogin: {account["login"]}\npassword: {account["password"]}\nphone: {account["phone_number"]}\ncard: {account["card_number"]}')
+        await message.answer('#'*20)
+
+class Funpay_Account():
+    active = str()
+    login = str()
+
+async def edit_account(message: types.Message):
+    markup = types.InlineKeyboardMarkup()
+    markup.add(*[types.InlineKeyboardButton(text=x['login'], callback_data=x['login']+'_edit') for x in get_all_profiles()])
+    await message.answer('Choice account', reply_markup=markup)
+    global funpay_acc
+    funpay_acc = Funpay_Account()
+
+@dp.callback_query_handler(text=[x['login']+'_edit' for x in get_all_profiles()])
+async def send_random_value(call: types.CallbackQuery):
+    markup = types.InlineKeyboardMarkup()
+    markup.add(types.InlineKeyboardButton(text='0',callback_data='0'+'_edit'),types.InlineKeyboardButton(text='1',callback_data='1'+'_edit'))
+    global funpay_acc
+    funpay_acc.login = call.data[:-5]
+    await call.message.answer('Enter active status', reply_markup=markup)
+
+@dp.callback_query_handler(text=['0'+'_edit','1'+'_edit'])
+async def send_random_value(call: types.CallbackQuery):
+    global funpay_acc
+    funpay_acc.active = call.data[:-5]
+    set_account_active(login = funpay_acc.login, active = funpay_acc.active)
+    await call.message.answer('Succesfull!')
+
+async def delete_account(message:types.Message):
+    markup = types.InlineKeyboardMarkup()
+    markup.add(*[types.InlineKeyboardButton(text=x['login'], callback_data=x['login']+'_delete') for x in get_all_profiles()])
+    await message.answer('Choice account', reply_markup=markup)
+
+@dp.callback_query_handler(text=[x['login']+'_delete' for x in get_all_profiles()])
+async def send_random_value(call: types.CallbackQuery):
+    if delete_user(call.data[:-7]):
+        await call.message.answer('Succesfull!')
+    else:
+        await call.message.answer('Failed!')
+
+class VK_Account(StatesGroup):
+    login = State()
+    access_token = State()
+    user_id = State()
+
+async def start_adding_vk_account(message: types.Message):
+    """
+    Sends an introduction message to the user and prompts them to enter their VK account login
+    """
+    await message.answer('Hey! I need to gather some information in order to add a new VK account.\nPlease enter your VK login:')
+    await VK_Account.login.set()
+
+@dp.message_handler(state=VK_Account.login)
+async def receive_access_token(message: types.Message, state:FSMContext):
+    """
+    Stores the user's VK login as state and prompts them to enter their VK account access token
+    """
+    async with state.proxy() as data:
+        data['login'] = message.text
+    await message.answer('Great! Now enter your VK access token:')
+    await VK_Account.access_token.set()
+
+@dp.message_handler(state=VK_Account.access_token)
+async def receive_user_id(message: types.Message, state:FSMContext):
+    """
+    Stores the user's VK access token as state and prompts them to enter their VK user ID
+    """
+    async with state.proxy() as data:
+        data['access_token'] = message.text
+    await message.answer('Almost done! Enter your VK user ID:')
+    await VK_Account.user_id.set()
+
+@dp.message_handler(state=VK_Account.user_id)
+async def add_vk_accounts(message: types.Message, state:FSMContext):
+    """
+    Stores the user's VK user ID as state and passes all gathered data to add_account_vk() before finishing the conversation
+    """
+    async with state.proxy() as data:
+        data['user_id'] = message.text
+        add_vk_account(login=data['login'], access_token=data['access_token'], user_id=int(data['user_id']))
+    await message.answer('Success! Your VK account has been added.')
+    await state.finish()
+
+@dp.message_handler(commands='cancel', state='*')
+async def cancel_adding_vk_account(message: types.Message, state: FSMContext):
+    """
+    Ends the conversation and cancels the addition of a new VK account
+    """
+    await message.answer('Adding a new VK account has been canceled.')
+    await state.finish()
+
+async def delete_vk_profile(message: types.Message):
+    markup = types.InlineKeyboardMarkup()
+    markup.add(*[types.InlineKeyboardButton(text=x['login'], callback_data=x['login']+'_delete_vk_acc') for x in select_all_vk_profiles()])
+    await message.answer('Select account to deleting...', reply_markup=markup)
+
+@dp.callback_query_handler(text=[x['login']+'_delete_vk_acc' for x in select_all_vk_profiles()])
+async def calc(call: types.CallbackQuery):
+    delete_vk_account(login=call.data.split("_")[0])
+    await call.message.answer(f'Account {call.data.split("_")[0]} was deleted!')
+
+async def set_vk_profile(message:types.Message):
+    markup = types.InlineKeyboardMarkup()
+    markup.add(*[types.InlineKeyboardButton(text=x['login'], callback_data=x['login']+'_seting_vk_acc') for x in select_all_vk_profiles()])
+    await message.answer('Select account...', reply_markup=markup)
+
+@dp.callback_query_handler(text=[x['login']+'_seting_vk_acc' for x in select_all_vk_profiles()])
+async def calc(call: types.CallbackQuery):
+    set_active_status_vk_accounts()
+    choice_active_status_vk_account(login=call.data.split("_")[0])
+    await call.message.answer(f'Account {call.data.split("_")[0]} was choiced!')
+
+async def get_vk_profiles(message:types.Message):
+    data = select_all_vk_profiles()
+    for result in data:
+        text = f'active: {bool(result["active"])}\nlogin: {result["login"]}\naccess token: {result["access_token"]}\nuser id: {result["user_id"]}'
+        await message.answer(text)
+        await message.answer('#'*20)
+
+async def kill_admins_vk(message:types.Message):
+    markup = types.InlineKeyboardMarkup().add(types.InlineKeyboardButton(text='Accept', callback_data='accept_kill_admin'))
+    await message.answer('Kill admins? Press the button to continue...', reply_markup=markup)
+
+@dp.callback_query_handler(text='accept_kill_admin')
+async def cmd(call: types.CallbackQuery):
+    await call.message.answer('Start clearing groups on the account: "{}"'.format(get_first_active_account_vk_info()["login"]))
+    main_admins()
+    await call.message.answer('Done!')
+
+async def on_startup(dp):
+    await bot.send_message(admin_chat_id, "Bot's working!")
+
+
+def message_handelers_registers(dp: Dispatcher):
+    dp.register_message_handler(start, commands=["start","start_tor"])
+    dp.register_message_handler(create_groupes, commands="create_groupes")
+    dp.register_message_handler(check_message, commands="check_message")
+    dp.register_message_handler(create_slotes, commands="create_slots")
+    dp.register_message_handler(delete_slotes, commands="delete_slots")
+    dp.register_message_handler(clear_groups, commands="clear_groups")
+    dp.register_message_handler(check_orders, commands="check_orders")
+    dp.register_message_handler(send_message, commands="send_message")
+    dp.register_message_handler(check_sales, commands="check_sales")
+    dp.register_message_handler(change_kef, commands="change_kef")
+    dp.register_message_handler(check_ip_r, commands="check_ip")
+    dp.register_message_handler(main_page, commands="main")
+    dp.register_message_handler(off_pc, commands="off_pc")
+    dp.register_message_handler(posting, commands="post")
+    dp.register_message_handler(tor_keys, commands="tor")
+    dp.register_message_handler(vk_keys, commands="vk")
+    dp.register_message_handler(info, commands="info")
+    dp.register_message_handler(auto, commands="auto")
+    dp.register_message_handler(up, commands="up")
+    dp.register_message_handler(check_lots, commands="check_lots")
+    dp.register_message_handler(edit_lot, commands="edit_lot")
+    dp.register_message_handler(get_balance, commands="get_balance")
+    dp.register_message_handler(withdrow_balance, commands="withdrow_balance")
+    dp.register_message_handler(check_balance_operations, commands="check_balance_operations")
+    dp.register_message_handler(complete_orders, commands="complete_orders")
+    dp.register_message_handler(refund_orders, commands="refund_orders")
+    dp.register_message_handler(cancel_operations_balances, commands="cancel_operations_balances")
+    dp.register_message_handler(check_feedbacks, commands="check_feedbacks")
+    dp.register_message_handler(funpay_account, commands="add_account")
+    dp.register_message_handler(get_account, commands="get_account")
+    dp.register_message_handler(edit_account, commands="edit_account")
+    dp.register_message_handler(delete_account, commands="delete_account")
+    dp.register_message_handler(start_adding_vk_account, commands="add_account_vk")
+    dp.register_message_handler(get_vk_profiles, commands="get_vk_profiles")
+    dp.register_message_handler(delete_vk_profile, commands="delete_vk_profile")
+    dp.register_message_handler(set_vk_profile, commands="set_vk_profile")
+    dp.register_message_handler(kill_admins_vk, commands="kill_admins_vk")
+
+if __name__ == '__main__':
+    message_handelers_registers(dp)
+    executor.start_polling(dp, skip_updates=True, on_startup=on_startup, allowed_updates=True)
