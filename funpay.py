@@ -179,7 +179,7 @@ def check_messages(url):
 
     all_message = []
     for i,x in enumerate(soup.find_all('div', {'class':['message-text','alert alert-with-icon alert-info']})):
-        username = x.previousSibling.next.text
+        username = x.previousSibling.text
         text = x.text
         if text == '': text = x.contents[0]['href']
         """image = session.get()
@@ -544,8 +544,8 @@ def logout():
 
 def main():
     print(logging_())
-    get_nickname()
-    check_messages(collect_chats()[0][2])
+    print(get_nickname())
+    print(check_messages(collect_chats()[0][2]))
     #print(check_sale('#GYPLRXRJ'))
 
 if __name__ == '__main__':
