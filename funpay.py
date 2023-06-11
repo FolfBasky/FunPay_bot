@@ -26,7 +26,7 @@ def recaptcha(site_key, url):
     print('captcha_solved')
     return job.get_solution_response()
 
-session = requests.Session()#get_tor_session()
+session = requests.Session()
 print(session.get("http://httpbin.org/ip").text)
 count = 0
 
@@ -122,9 +122,13 @@ def logging_():
         }
 
         response = session.get(url='https://funpay.com/security/ipChallenge')
+        if response.text.find('Телефон') != -1: 
+            lg = logging_data['phone_number'][-4:]
+        else:
+            lg = logging_data['card_number'][-4:]
         data = {
-            '0':logging_data['phone_number'][-4:] if response.text.find('Телефон') != -1 else logging_data['card_number'][-4:],
-            '1':logging_data['card_number'][-4:],
+            '0': lg,
+            '1': lg,
             'csrf_token':'undefined'
         }
         response = session.post(url='https://funpay.com/security/ipChallengeCheck', data=data, headers=headers1)
