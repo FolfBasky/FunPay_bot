@@ -1,1 +1,0 @@
-<CookieJar[<Cookie cy=rub for .funpay.com/>, <Cookie golden_key=6aiu7gbsfxze4zna7555xsicnp0hqez2 for .funpay.com/>, <Cookie locale=ru for .funpay.com/>, <Cookie PHPSESSID=c9al4ixLjQrlqNykLA6aBgcwrEWRQ%2CMT for funpay.com/>]>jhkvjgcgvjbkjihugytxgfchvjbkjlnok;
