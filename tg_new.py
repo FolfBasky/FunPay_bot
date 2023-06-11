@@ -9,7 +9,6 @@ from aiogram.dispatcher.filters.state import State, StatesGroup
 from sql import *
 from vk import *
 from funpay import *
-from coords import *
 from data import kef
 
 bot = Bot(token="5571779165:AAFC8iMTKtS3PHR65IxIEqaB8R7KmbdN_YE")
