@@ -7,6 +7,7 @@ import random
 import proxy
 from http.cookiejar import CookieJar
 import vk
+import os
 
 data_st = {
     'csrf_token':'',
@@ -125,7 +126,7 @@ def logging_():
         if response.text.find('Телефон') != -1: 
             lg = logging_data['phone_number'][-4:]
         else:
-            lg = logging_data['card_number'][-4:]
+            lg = 4428#logging_data['card_number'][-4:]
         data = {
             '0': lg,
             '1': lg,
@@ -177,14 +178,20 @@ def check_messages(url):
     soup = BeautifulSoup(response.text, 'lxml')
 
     all_message = []
-    for x in soup.find_all('div', {'class':['message-text','alert alert-with-icon alert-info']}):
-        username = x.previousSibling.text
+    for i,x in enumerate(soup.find_all('div', {'class':['message-text','alert alert-with-icon alert-info']})):
+        username = x.previousSibling.next.text
         text = x.text
+        if text == '': text = x.contents[0]['href']
+        """image = session.get()
+        #if not os.path.isdir('photos'): os.mkdir('photos')
+        if not os.path.isdir(f'photos/{username}'): os.mkdir(f'photos/{username}')
+        with open(f'photos/{username}/{i}.jpg', 'wb') as file:
+            file.write(image.content)"""
         if username == ' ': username = 'FunPay'
         if username == '\n':
             all_message.append(text.strip())
         else:
-            username = re.sub('\d\d.\d\d.\d\d', '', username)
+
             all_message.append(f"{username:_^26}\n{text.strip()}")
     
     return all_message
@@ -518,6 +525,11 @@ def check_feedback():
         result.append((order, date, detail, text, stars))
     return result
 
+def get_nickname():
+    response = session.get('https://funpay.com/')
+    soup = BeautifulSoup(response.text,'lxml')
+    return soup.find('div', class_='user-link-name').text
+
 def logout():
     global session
     response = session.get('https://funpay.com/')
@@ -532,7 +544,8 @@ def logout():
 
 def main():
     print(logging_())
-    logout()
+    get_nickname()
+    check_messages(collect_chats()[0][2])
     #print(check_sale('#GYPLRXRJ'))
 
 if __name__ == '__main__':

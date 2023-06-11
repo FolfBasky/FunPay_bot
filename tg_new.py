@@ -181,7 +181,7 @@ async def auto(message: types.Message):
                 await message.answer(f'{x[2]} : {x[0]}')
                 await message.answer(x[1])
                 await message.answer('#'*20)
-        await asyncio.sleep(60)
+        await asyncio.sleep(20)
 
 async def create_slotes(message: types.Message):
 
