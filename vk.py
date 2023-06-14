@@ -7,7 +7,11 @@ from data import kef
 from sql import get_first_active_account_vk_info, set_active_status_vk_accounts, choice_active_status_vk_account
 from tqdm import tqdm
 import time
+from bs4 import BeautifulSoup
 
+def randomword(length):
+   letters = string.ascii_lowercase
+   return ''.join(random.choice(letters) for i in range(length))
 
 def get_data():
     #set_active_status_vk_accounts()
@@ -79,7 +83,8 @@ def count_subscribers(link):
     except:
         pass
 
-def groups():
+def groups() -> dict:
+    '{id:subs}'
     admins_groups = get_admins_groups()
     grops_count_subscribers = []
     for i in admins_groups:
@@ -460,5 +465,47 @@ def main_delete_messages():
         for peer_id in data:
             delete_messages(gr, peer_id)
 
+def set_group_links():
+    personally_token, _ = get_data()
+    captcha_key = captcha_sid = None
+    session = requests.session()
+    for gr in groups().keys():
+        while True:
+            response = session.get('https://api.vk.com/method/groups.edit?', params={
+                'access_token': personally_token,
+                'group_id':gr,
+                'screen_name': randomword(10),
+                'captcha_key':captcha_key,
+                'captcha_sid':captcha_sid,
+                'v':version
+            })
+        
+            try:
+                if response.json()['error']['error_code'] == 14:
+                    img_data = requests.get(response.json()['error']['captcha_img']).content
+                    with open('captcha_ms.jpeg', 'wb') as handler:
+                        handler.write(img_data)
+                    captcha_key = captcha_solved()
+                    captcha_sid = response.json()['error']['captcha_sid']
+                    
+                elif response.json()['error']['error_code'] == 9:
+                    time.sleep(5)
+                
+                elif response.json()['error']['error_code'] == 17:
+                    break
+                    validate = session.get(response.json()['error']['redirect_uri'])
+                    soup = BeautifulSoup(validate.text, 'lxml')
+
+
+                    hash = soup.find_all('a')[1]['href'].split('&')[1]
+                    api_hash = soup.find_all('a')[1]['href'].split('&')[2].split('%')[-3]
+                    1
+                    
+            except: break
+        try:
+            if response.json()['response'] == 1: 
+                print(f'{gr} is complited')
+        except: pass
+
 if __name__ == "__main__":
-    main_delete_messages()
+    ...
