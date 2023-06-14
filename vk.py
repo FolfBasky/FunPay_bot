@@ -179,7 +179,7 @@ def lock_all(links):
             'places': 0,
             'contacts': 0,
             'docs': 0,
-            'messages': 1,
+            'messages': 0,
             'market': 0, 
             'phone':'',
             'email':'',
