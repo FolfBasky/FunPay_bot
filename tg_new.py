@@ -456,7 +456,7 @@ async def cmd(message: types.Message, state: FSMContext):
     await state.finish()
 
 async def get_account(message: types.Message):
-    for account in get_all_profiles():
+    for account in get_all_profiles()[::-1]:
         await message.answer(f'active: {bool(account["active"])}\nlogin: {account["login"]}\npassword: {account["password"]}\nphone: {account["phone_number"]}\ncard: {account["card_number"]}')
         await message.answer('#'*20)
 

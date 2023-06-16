@@ -25,6 +25,7 @@ def add_user_profile(active, login, password, number_phone, number_card=None):
         """
         profile_data = (active, login, password, number_phone, number_card)
         cursor.execute(add_profile, profile_data)
+    return True
 
 # Define a function to get the details of the first active account
 def get_first_active_account_info():
@@ -72,6 +73,7 @@ def delete_user(login):
             DELETE FROM user_profiles WHERE login = ?
         """
         cursor.execute(query, (login,))
+    return True
 
 # Define a function to get the details of all user profiles
 def get_all_profiles():
