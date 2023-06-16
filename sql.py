@@ -47,6 +47,15 @@ def get_first_active_account_info():
 
     return result
 
+
+def set_active_status_accounts(active=False):
+    with sqlite3.connect('user_profiles.db') as conn:
+        cursor = conn.cursor()
+        query = """
+            UPDATE user_profiles SET active = ?
+        """
+        cursor.execute(query, (int(active),))
+
 # Define a function to set the active status of a user profile
 def set_account_active(login, active:int):
     with sqlite3.connect('user_profiles.db') as conn:

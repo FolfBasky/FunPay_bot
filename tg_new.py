@@ -483,6 +483,7 @@ async def send_random_value(call: types.CallbackQuery):
 async def send_random_value(call: types.CallbackQuery):
     global funpay_acc
     funpay_acc.active = call.data[:-5]
+    set_active_status_accounts()
     set_account_active(login = funpay_acc.login, active = funpay_acc.active)
     await call.message.answer('Succesfull!')
 
