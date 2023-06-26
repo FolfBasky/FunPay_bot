@@ -286,15 +286,11 @@ async def cmd(message: types.Message, state: FSMContext):
     await state.finish()
 
 async def check_ip_r(message:types.Message):
-    headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36',
-        'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
-        'accept-encoding': 'gzip, deflate, br',
-        'accept-language': 'ru,en;q=0.9'}
-    response = session.get('https://pr-cy.ru/browser-details/', headers=headers, timeout=10)
-    soup = BeautifulSoup(response.text, 'lxml')
-    my_ip = soup.find('div',class_='ip-myip').text
-    await message.answer(f'IP: {my_ip}')
+    try:
+        ip = session.get("http://httpbin.org/ip", timeout=10).text
+    except:
+        await message.answer('Bad internet connection!')    
+    await message.answer('IP:' + re.search(r'\d{2,}.\d{2,}.\d{2,}.\d{2,}', ip)[0] )
 
 async def get_balance(message:types.Message):
     await message.answer(get_balance_r())
@@ -637,4 +633,4 @@ def message_handelers_registers(dp: Dispatcher):
 
 if __name__ == '__main__':
     message_handelers_registers(dp)
-    executor.start_polling(dp, skip_updates=True, on_startup=on_startup)
+    executor.start_polling(dp, skip_updates=True, on_startup=on_startup, allowed_updates=True)
