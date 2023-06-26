@@ -1,0 +1,3 @@
+INFO:aiogram:Bot: FunPay_bot [@keypizza_bot]
+WARNING:aiogram:Updates were skipped successfully.
+INFO:aiogram.dispatcher.dispatcher:Start polling.

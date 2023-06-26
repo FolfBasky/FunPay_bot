@@ -14,7 +14,6 @@ from data import kef
 bot = Bot(token="5571779165:AAFC8iMTKtS3PHR65IxIEqaB8R7KmbdN_YE")
 admin_chat_id = -778858479
 dp = Dispatcher(bot, storage=MemoryStorage())
-logging.basicConfig(filename='log.txt',filemode='w',level=logging.INFO)
 
 async def posting(message: types.Message):
     links = [x for x in groups().keys()]  
@@ -287,7 +286,12 @@ async def cmd(message: types.Message, state: FSMContext):
     await state.finish()
 
 async def check_ip_r(message:types.Message):
-    response = session.get('https://pr-cy.ru/browser-details/')
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36',
+        'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+        'accept-encoding': 'gzip, deflate, br',
+        'accept-language': 'ru,en;q=0.9'}
+    response = session.get('https://pr-cy.ru/browser-details/', headers=headers)
     soup = BeautifulSoup(response.text, 'lxml')
     my_ip = soup.find('div',class_='ip-myip').text
     await message.answer(f'IP: {my_ip}')
