@@ -291,7 +291,7 @@ async def check_ip_r(message:types.Message):
         'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
         'accept-encoding': 'gzip, deflate, br',
         'accept-language': 'ru,en;q=0.9'}
-    response = session.get('https://pr-cy.ru/browser-details/', headers=headers)
+    response = session.get('https://pr-cy.ru/browser-details/', headers=headers, timeout=10)
     soup = BeautifulSoup(response.text, 'lxml')
     my_ip = soup.find('div',class_='ip-myip').text
     await message.answer(f'IP: {my_ip}')
