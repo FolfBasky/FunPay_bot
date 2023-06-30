@@ -71,7 +71,7 @@ def logging_():
     }
         
     session.cookies = CookieJar()
-    print( set_valute() )
+    
     try:
         response = session.get(url='https://funpay.com/', headers=headers)
     except:
@@ -122,7 +122,7 @@ def logging_():
             'path': '/security/ipChallengeCheck',
             'scheme': 'https'
         }
-
+        print( set_valute() )
         response = session.get(url='https://funpay.com/security/ipChallenge')
         if response.text.lower().find('телефон') != -1: 
             lg = logging_data['phone_number'][-4:]
