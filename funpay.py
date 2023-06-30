@@ -71,6 +71,7 @@ def logging_():
     }
         
     session.cookies = CookieJar()
+    print( set_valute() )
     try:
         response = session.get(url='https://funpay.com/', headers=headers)
     except:
@@ -125,7 +126,7 @@ def logging_():
         response = session.get(url='https://funpay.com/security/ipChallenge')
         if response.text.lower().find('телефон') != -1: 
             lg = logging_data['phone_number'][-4:]
-        elif response.text.lower().find('карты') != -1:
+        elif response.text.lower().find('карта') != -1:
             lg = logging_data['card_number'][-4:]
         else:
             return 'Fail last num'
@@ -138,7 +139,7 @@ def logging_():
         if response.status_code != 200:
             print('Fail last num')
             return 'Fail last num'
-        print( set_valute() )
+        
 
 def set_valute():
     response = session.get('https://funpay.com/en/lots/699/?setlocale=ru')
