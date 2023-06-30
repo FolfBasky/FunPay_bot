@@ -123,10 +123,12 @@ def logging_():
         }
 
         response = session.get(url='https://funpay.com/security/ipChallenge')
-        if response.text.find('Телефон') != -1: 
+        if response.text.lower().find('телефон') != -1: 
             lg = logging_data['phone_number'][-4:]
-        else:
+        elif response.text.lower().find('карты') != -1:
             lg = logging_data['card_number'][-4:]
+        else:
+            return 'Fail last num'
         data = {
             '0': lg,
             '1': lg,
