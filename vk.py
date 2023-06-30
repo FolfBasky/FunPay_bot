@@ -91,22 +91,22 @@ def groups() -> dict:
         grops_count_subscribers.append(count_subscribers(i))
     groups = dict(zip(admins_groups,grops_count_subscribers))
     groups = {i: j for i, j in groups.items() if j!=None }
-    """with open('groups.txt','w') as a:
+    with open('groups.txt','w') as a:
         group_link,group_subscribers = list(groups.keys()),list(groups.values())
         for i in range(0,len(group_link)):
             a.write(f'{group_link[i]}:{group_subscribers[i]}\n')
-        a.close()"""
+        a.close()
     return groups
 
 def create_photos():
-    #colors = ['white','red','blue','yellow','gray','orange','green','pink','brown','purple' ,'gold', 'olive', 'magenta', 'cyan'] 
-    colors = ['black']
+    colors = ['white','red','blue','yellow','gray','orange','green','pink','brown','purple' ,'gold', 'olive', 'magenta', 'cyan'] 
+    #colors = ['black']
     i = random.choice(colors)
     colors.pop(colors.index(i))
     img = Image.new('RGB', (1000, 1000), i)
     img.save('test.jpg')
     
-    """img = Image.open('test.jpg')
+    img = Image.open('test.jpg')
     font = ImageFont.truetype("arial.ttf", size=125)
     idraw = ImageDraw.Draw(img)
     if i in ['black','gray']: color = 'white'
@@ -115,11 +115,11 @@ def create_photos():
     for y in range(0,img.width + round(img.width/10),a):
         for x in range(0,img.width + round(img.width/10),len(i)*66 + 40):
             idraw.text((10+1*x, 0+1.25*y),font = font, text = i,fill= color,align='center',  stroke_width=2)
-    img.save('test.jpg')"""
+    img.save('test.jpg')
 
     img = Image.new('RGB', (1590, 530), i)
     img.save('test1.jpg')
-    """img = Image.open('test1.jpg')
+    img = Image.open('test1.jpg')
     font = ImageFont.truetype("arial.ttf", size=125)
     idraw = ImageDraw.Draw(img)
     if i in ['black','gray','red']: color = 'white'
@@ -128,7 +128,7 @@ def create_photos():
     for y in range(0,img.width + round(img.width/10),a):
         for x in range(0,img.width + round(img.width/10),a):
             idraw.text((0+(len(i)/1.5)*x, 0+1*y),font = font, text = i,fill= color,align='center',  stroke_width=2)
-    img.save('test1.jpg')"""
+    img.save('test1.jpg')
 
 def lock_all(links):
     personally_token, user_id = get_data()
