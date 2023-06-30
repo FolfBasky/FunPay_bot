@@ -163,8 +163,8 @@ def lock_all(links):
             params = {
             'access_token': personally_token,
             'group_id' : link,
-            'title' : f'Группа №{c}', #'Купить группу паблик ВК VK Вконтакте',
-            'description': 'Здесь вы можете купить любую группу ВК по низкой цене!',
+            'title' : name, #f'Группа №{c}', #'Купить группу паблик ВК VK Вконтакте',
+            'description': '',#'Здесь вы можете купить любую группу ВК по низкой цене!',
             #'screen_name': name + str(random.randint(0,1000)),
             'website':'',
             'access' : 0,
@@ -508,4 +508,4 @@ def set_group_links():
         except: pass
 
 if __name__ == "__main__":
-    ...
+    set_group_links()

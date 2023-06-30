@@ -126,7 +126,7 @@ def logging_():
         if response.text.find('Телефон') != -1: 
             lg = logging_data['phone_number'][-4:]
         else:
-            lg = 4428#logging_data['card_number'][-4:]
+            lg = logging_data['card_number'][-4:]
         data = {
             '0': lg,
             '1': lg,
