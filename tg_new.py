@@ -10,7 +10,7 @@ from vk import *
 from funpay import *
 from data import kef
 
-bot = Bot(token="6298014038:AAG7dAP-lTE_BTSAA_vg-F0CXUkFlcOZLxY")
+bot = Bot(token="5571779165:AAFC8iMTKtS3PHR65IxIEqaB8R7KmbdN_YE")
 admin_chat_id = -778858479
 dp = Dispatcher(bot, storage=MemoryStorage())
 
