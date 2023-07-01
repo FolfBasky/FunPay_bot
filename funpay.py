@@ -188,7 +188,7 @@ def check_messages(url):
     soup = BeautifulSoup(response.text, 'lxml')
 
     all_message = []
-    for x in (soup.find_all('div', {'class':['message-text','alert alert-with-icon alert-info']})):
+    for x in (soup.find_all('div', {'class':['message-text','alert alert-with-icon alert-info']})[1:]):
         username = x.previousSibling.text
         text = x.text
         if text == '': text = x.contents[0]['href']
