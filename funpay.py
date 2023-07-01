@@ -169,6 +169,7 @@ def collect_chats():
     result = []
     try:
         count = int(soup.find('span', {'class':['badge badge-chat hidden','badge badge-chat']}).text.strip().replace('\n', ''))
+        print(count)
         if not count: count = 3
     except:
         count = 3
