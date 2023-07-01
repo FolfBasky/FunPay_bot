@@ -168,7 +168,7 @@ def collect_chats():
     soup = BeautifulSoup(response.text, 'lxml')
     result = []
     try:
-        count = int(soup.find('span', class_='badge badge-chat').text.strip().replace('\n', ''))
+        count = int(soup.find('span', {'class':['badge badge-chat hidden','badge badge-chat']}).text.strip().replace('\n', ''))
         if not count: count = 3
     except:
         count = 3
