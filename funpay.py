@@ -169,12 +169,12 @@ def collect_chats():
     result = []
     try:
         count = int(soup.find('span', {'class':['badge badge-chat hidden','badge badge-chat']}).text.strip().replace('\n', ''))
-        print(count)
+        #print(count)
         if not count: count = 3
     except:
         count = 3
-    
-    for x in range(len(soup.find_all('a', class_='contact-item'))):
+    # all_messages_count = len(soup.find_all('a', class_='contact-item'))
+    for x in range(count):
         last_msg = ' '.join(soup.find_all('a', class_='contact-item')[x].text.strip().replace('\n', ' ').split()[1:])
         link = soup.find_all('a', class_='contact-item')[x]['href'].strip().replace('\n', ' ')
         username = soup.find_all('a', class_='contact-item')[x].contents[3].text.strip().replace('\n', ' ')
