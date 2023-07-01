@@ -167,6 +167,12 @@ def collect_chats():
     response = session.get(url='https://funpay.com/chat/')
     soup = BeautifulSoup(response.text, 'lxml')
     result = []
+    try:
+        count = int(soup.find('span', class_='badge badge-chat').text.strip().replace('\n', ''))
+        if not count: count = 3
+    except:
+        count = 3
+    
     for x in range(len(soup.find_all('a', class_='contact-item'))):
         last_msg = ' '.join(soup.find_all('a', class_='contact-item')[x].text.strip().replace('\n', ' ').split()[1:])
         link = soup.find_all('a', class_='contact-item')[x]['href'].strip().replace('\n', ' ')
@@ -545,8 +551,9 @@ def logout():
 
 def main():
     print(logging_())
-    print(get_nickname())
-    print(check_messages(collect_chats()[0][2]))
+    collect_chats()
+    #print(get_nickname())
+    #print(check_messages(collect_chats()[0][2]))
     #print(check_sale('#GYPLRXRJ'))
 
 if __name__ == '__main__':

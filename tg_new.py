@@ -1,7 +1,6 @@
 import asyncio
 import os
 from aiogram import Bot, Dispatcher, executor, types
-import logging
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import State, StatesGroup
@@ -11,7 +10,7 @@ from vk import *
 from funpay import *
 from data import kef
 
-bot = Bot(token="5571779165:AAFC8iMTKtS3PHR65IxIEqaB8R7KmbdN_YE")
+bot = Bot(token="6298014038:AAG7dAP-lTE_BTSAA_vg-F0CXUkFlcOZLxY")
 admin_chat_id = -778858479
 dp = Dispatcher(bot, storage=MemoryStorage())
 
@@ -114,7 +113,7 @@ async def main_page(message: types.Message):
 
 async def check_message(message: types.Message):
     result = collect_chats()
-    for x in result[:3]:
+    for x in result:
         await message.answer('\n'.join(check_messages(x[2])))
         await message.answer(x[2])
         await message.answer('#'*20)
