@@ -4,10 +4,8 @@ import re
 from python_anticaptcha import AnticaptchaClient, NoCaptchaTaskProxylessTask
 from data import *
 import random
-import proxy
 from http.cookiejar import CookieJar
 import vk
-import os
 
 data_st = {
     'csrf_token':'',
