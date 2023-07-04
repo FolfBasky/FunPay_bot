@@ -70,7 +70,7 @@ async def start(message: types.Message):
     if message.chat.id == admin_chat_id:
         keyboard1= types.ReplyKeyboardMarkup(resize_keyboard=True)
         keyboard1.add('Y','N')
-        await message.answer(f'Hi, {message.from_user.full_name} \nStart Tor?(Y/N)', reply_markup=yes_no)
+        await message.answer(f'Hi, {message.from_user.full_name} \nStart Bot?(Y/N)', reply_markup=yes_no)
         await Start_states.choice.set()
 
 @dp.message_handler(lambda message: 'Y' == (message.text).upper(), state = Start_states.choice)
