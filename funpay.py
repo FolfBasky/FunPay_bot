@@ -28,17 +28,35 @@ def recaptcha(site_key, url):
 session = requests.Session()
 print(session.get("http://httpbin.org/ip").text)
 
+def validate_ip():
+    'check if ip is valid: True if valid, False if not'
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 YaBrowser/23.1.4.776 Yowser/2.5 Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
+        'Accept-Language': 'ru,en;q=0.9',
+        'Connection': 'keep-alive',
+        'Upgrade-Insecure-Requests': '1',
+        'dnt':'1',
+    }
+    try:
+        response = requests.get('https://ip2geolocation.com/', headers=headers, timeout=10)
+        soup = BeautifulSoup(response.text, 'lxml')
+    except Exception as e:
+        return False
+    if soup.find_all('td', class_='res')[6].text == 'Санкт-Петербург': 
+        return False
+    else:
+        return True 
+
 def logging_():
+    if not validate_ip(): return 'Invalid ip!'
     global session, response
     try:
         from sql import get_first_active_account_info
         logging_data = get_first_active_account_info()
     except:
         return 'Need enter data!'
-
     
-    if [1 for x in ['88.201.206.128','188.170.85.40'] if x in session.get("http://httpbin.org/ip").text] != []:
-        return 'No proxie!'
     
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 YaBrowser/23.1.4.776 Yowser/2.5 Safari/537.36',
@@ -524,4 +542,5 @@ def main():
     #print(check_sale('#GYPLRXRJ'))
 
 if __name__ == '__main__':
+    validate_ip()
     main()
