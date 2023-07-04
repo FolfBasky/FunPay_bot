@@ -29,38 +29,19 @@ def recaptcha(site_key, url):
 
 session = requests.Session()
 print(session.get("http://httpbin.org/ip").text)
-count = 0
-
-def prox():
-    global session,count, proxyes
-    #session = requests.Session()
-    proxyes = proxy.prox_ip_check()
-    if proxyes == None: return
-    session.proxies.update(proxyes[count])
-    print(session.get("http://httpbin.org/ip").text)
-    try:
-        while [1 for x in ['88.201.206.128','188.170.85.40'] if x in session.get("http://httpbin.org/ip").text] != []:
-            count += 1
-            session.proxies.update(proxyes[count])
-            print(session.get("http://httpbin.org/ip").text)
-    except:
-        count = 0
-
-
-while [1 for x in ['88.201.206.128','188.170.85.40'] if x in session.get("http://httpbin.org/ip").text] != []:
-    if prox() == None:
-        break
 
 def logging_():
+    global session, response
     try:
         from sql import get_first_active_account_info
         logging_data = get_first_active_account_info()
     except:
         return 'Need enter data!'
 
-    global session, count, response
+    
     if [1 for x in ['88.201.206.128','188.170.85.40'] if x in session.get("http://httpbin.org/ip").text] != []:
         return 'No proxie!'
+    
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 YaBrowser/23.1.4.776 Yowser/2.5 Safari/537.36',
         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
@@ -71,74 +52,62 @@ def logging_():
     }
         
     session.cookies = CookieJar()
-    
+    response = session.get(url='https://funpay.com/account/login', headers=headers)
+    soup = BeautifulSoup(response.text, 'lxml')
+    csrf_token = re.search(r'csrf_token.{0,}=.{0,}"',response.text)[0].split()[1][7:-1]
+    data_st['csrf_token'] = csrf_token
+    site_key = soup.find_all('div', class_='g-recaptcha')[0]['data-sitekey']
+    data_st['g-recaptcha-response'] = recaptcha(site_key, url='https://funpay.com/account/login')
+    data_st['login'] = logging_data['login']
+    data_st['password'] = logging_data['password']
     try:
-        response = session.get(url='https://funpay.com/', headers=headers)
+        response = session.post('https://funpay.com/account/login', data=data_st, headers=headers)
     except:
-        count += 1
-        session.proxies.update(proxyes[count])
-        logging_()   
-    if response.status_code != 200:
-        count += 1
-        session.proxies.update(proxyes[count])
-        logging_()        
-    else:
-        response = session.get(url='https://funpay.com/account/login', headers=headers)
-        soup = BeautifulSoup(response.text, 'lxml')
-        csrf_token = re.search(r'csrf_token.{0,}=.{0,}"',response.text)[0].split()[1][7:-1]
-        data_st['csrf_token'] = csrf_token
-        site_key = soup.find_all('div', class_='g-recaptcha')[0]['data-sitekey']
-        data_st['g-recaptcha-response'] = recaptcha(site_key, url='https://funpay.com/account/login')
-        data_st['login'] = logging_data['login']
-        data_st['password'] = logging_data['password']
-        try:
-            response = session.post('https://funpay.com/account/login', data=data_st, headers=headers)
-        except:
-            print('Fail use proxy')
-            return 'Fail use proxy'
-        if response.status_code != 200 or 'Войти' in response.text: 
-            print('Fail first auth')
-            return 'Fail first auth'
-        
+        print('Fail use proxy')
+        return 'Fail use proxy'
+    if response.status_code != 200 or 'Войти' in response.text: 
+        print('Fail first auth')
+        return 'Fail first auth'
+    
 
-        headers1 = {
-            'accept': 'application/json, text/javascript, */*; q=0.01',
-            'accept-language': 'ru,en;q=0.9',
-            'content-length': '23',
-            'content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
-            'dnt': '1',
-            'origin': 'https://funpay.com',
-            'referer': 'https://funpay.com/security/ipChallenge',
-            'sec-ch-ua': '"Not?A_Brand";v="8", "Chromium";v="108", "Yandex";v="23"',
-            'sec-ch-ua-mobile': '?0',
-            'sec-ch-ua-platform': '"Windows"',
-            'sec-fetch-dest': 'empty',
-            'sec-fetch-mode': 'cors',
-            'sec-fetch-site': 'same-origin',
-            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 YaBrowser/23.1.2.987 Yowser/2.5 Safari/537.36',
-            'x-requested-with': 'XMLHttpRequest',
-            'authority': 'funpay.com',
-            'method': 'POST',
-            'path': '/security/ipChallengeCheck',
-            'scheme': 'https'
-        }
-        print( set_valute() )
-        response = session.get(url='https://funpay.com/security/ipChallenge')
-        if response.text.lower().find('телефон') != -1: 
-            lg = logging_data['phone_number'][-4:]
-        elif response.text.lower().find('карта') != -1:
-            lg = logging_data['card_number'][-4:]
-        else:
-            return 'Fail last num'
-        data = {
-            '0': lg,
-            '1': lg,
-            'csrf_token':'undefined'
-        }
-        response = session.post(url='https://funpay.com/security/ipChallengeCheck', data=data, headers=headers1)
-        if response.status_code != 200:
-            print('Fail last num')
-            return 'Fail last num'
+    headers1 = {
+        'accept': 'application/json, text/javascript, */*; q=0.01',
+        'accept-language': 'ru,en;q=0.9',
+        'content-length': '23',
+        'content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
+        'dnt': '1',
+        'origin': 'https://funpay.com',
+        'referer': 'https://funpay.com/security/ipChallenge',
+        'sec-ch-ua': '"Not?A_Brand";v="8", "Chromium";v="108", "Yandex";v="23"',
+        'sec-ch-ua-mobile': '?0',
+        'sec-ch-ua-platform': '"Windows"',
+        'sec-fetch-dest': 'empty',
+        'sec-fetch-mode': 'cors',
+        'sec-fetch-site': 'same-origin',
+        'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 YaBrowser/23.1.2.987 Yowser/2.5 Safari/537.36',
+        'x-requested-with': 'XMLHttpRequest',
+        'authority': 'funpay.com',
+        'method': 'POST',
+        'path': '/security/ipChallengeCheck',
+        'scheme': 'https'
+    }
+    print( set_valute() )
+    response = session.get(url='https://funpay.com/security/ipChallenge')
+    if response.text.lower().find('телефон') != -1: 
+        lg = logging_data['phone_number'][-4:]
+    elif response.text.lower().find('карта') != -1:
+        lg = logging_data['card_number'][-4:]
+    else:
+        return 'Fail last num'
+    data = {
+        '0': lg,
+        '1': lg,
+        'csrf_token':'undefined'
+    }
+    response = session.post(url='https://funpay.com/security/ipChallengeCheck', data=data, headers=headers1)
+    if response.status_code != 200:
+        print('Fail last num')
+        return 'Fail last num'
         
 
 def set_valute():

@@ -25,9 +25,9 @@ keyboard_tor = types.ReplyKeyboardMarkup(resize_keyboard=True)
 keyboard_main = types.ReplyKeyboardMarkup(resize_keyboard=True)
 yes_no = types.ReplyKeyboardMarkup(resize_keyboard=True)
 
-keyboard_vk.add(*["/get_vk_profiles","/add_account_vk","/delete_vk_profile","/set_vk_profile","/clear_groups","/post","/create_groupes", "/kill_admins_vk","/main","/tor"])
-keyboard_tor.add(*["/start_tor","/check_message","/check_sales", "/refund_orders","/check_orders", "/complete_orders","/send_message","/create_slots","/delete_slots","/edit_lot","/check_lots","/get_balance","/check_balance_operations","/withdrow_balance", "/cancel_operations_balances","/up","/auto","/check_ip","/check_feedbacks","/logout","/main","/vk"])
-keyboard_main.add(*["/start","/info","/change_kef","/get_account", "/add_account","/edit_account","/delete_account","/vk","/tor"])
+keyboard_vk.add(*["/info","/get_vk_profiles","/add_account_vk","/delete_vk_profile","/set_vk_profile","/clear_groups","/post","/create_groupes", "/kill_admins_vk","/main","/tor"])
+keyboard_tor.add(*["/start_bot","/check_message","/check_sales", "/refund_orders","/check_orders", "/complete_orders","/send_message","/create_slots","/delete_slots","/edit_lot","/check_lots","/get_balance","/check_balance_operations","/withdrow_balance", "/cancel_operations_balances","/up","/auto","/check_ip","/check_feedbacks","/logout","/main","/vk"])
+keyboard_main.add(*["/start_bot","/change_kef","/get_account", "/add_account","/edit_account","/delete_account","/vk","/tor"])
 yes_no.add(*["Y","N"])
 
 
@@ -592,7 +592,7 @@ async def on_startup(dp):
 
 
 def message_handelers_registers(dp: Dispatcher):
-    dp.register_message_handler(start, commands=["start","start_tor"])
+    dp.register_message_handler(start, commands=["start","start_bot"])
     dp.register_message_handler(create_groupes, commands="create_groupes")
     dp.register_message_handler(check_message, commands="check_message")
     dp.register_message_handler(create_slotes, commands="create_slots")
