@@ -54,6 +54,7 @@ def logging_():
     try:
         from sql import get_first_active_account_info
         logging_data = get_first_active_account_info()
+        if logging_data is None: return 'No active account!'    
     except:
         return 'Need enter data!'
     
