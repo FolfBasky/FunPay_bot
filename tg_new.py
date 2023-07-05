@@ -172,7 +172,7 @@ async def auto(message: types.Message):
                 await message.answer('Session is working')
             else:
                 await message.answer(result)
-                asyncio.sleep(5*60)
+                await asyncio.sleep(5*60)
                 await auto(message)
         last_msgs = collect_chats()[:5]
         for x in last_msgs:
