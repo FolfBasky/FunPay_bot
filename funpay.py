@@ -69,6 +69,7 @@ def logging_():
         
     session.cookies = CookieJar()
     response = session.get(url='https://funpay.com/account/login', headers=headers)
+    if response.status_code != 200: return 'Bad internet connection!'
     soup = BeautifulSoup(response.text, 'lxml')
     csrf_token = re.search(r'csrf_token.{0,}=.{0,}"',response.text)[0].split()[1][7:-1]
     data_st['csrf_token'] = csrf_token
