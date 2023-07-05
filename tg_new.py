@@ -186,7 +186,6 @@ async def auto(message: types.Message):
         await asyncio.sleep(20)
 
 async def create_slotes(message: types.Message):
-
     await message.answer(create_lot())
 
 async def delete_slotes(message: types.Message):

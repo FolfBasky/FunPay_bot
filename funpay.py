@@ -528,20 +528,31 @@ def logout():
     response = session.get('https://funpay.com/')
     soup = BeautifulSoup(response.text, 'lxml')
     try:
-        url = soup.find_all('li')[19].next['href']
+        for el in soup.find_all('li'):
+            if el.text == 'Выйти': 
+                url = el.next['href']
+                break
         response = session.get(url)
         session = requests.Session()
         return [True]
     except Exception as e:
         return [False, e]
 
+def change_account():
+    from sql import set_active_status_accounts, set_account_active, get_first_active_account_info
+    set_active_status_accounts()
+    set_account_active(login = 'jerk37673@gmail.com', active = 1)
+    print(get_first_active_account_info())
+
 def main():
+    change_account()
     print(logging_())
-    collect_chats()
+    print(logout())
+    #collect_chats()
     #print(get_nickname())
     #print(check_messages(collect_chats()[0][2]))
     #print(check_sale('#GYPLRXRJ'))
 
 if __name__ == '__main__':
-    validate_ip()
+    #validate_ip()
     main()
