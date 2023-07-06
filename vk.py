@@ -33,12 +33,7 @@ def captcha_solved():
     print('Captcha key = ',job.get_captcha_text())
     return (job.get_captcha_text())
 
-def collect_groups():
-    with open('groups.txt','r') as a:
-        groups_data = a.read().split()
-    return groups_data
-
-def generate_random_string(lenght):
+def generate_random_string():
     vowels = consonants = []
     vowels = [x for x in list(string.ascii_lowercase) if x in 'aeiouy']
     consonants = [x for x in list(string.ascii_lowercase) if x not in 'aeiouy']
@@ -55,7 +50,6 @@ names = []
 for i in range(200):
     names.append(generate_random_string(3))
 
-
 def get_admins_groups():
     personally_token, user_id = get_data()
     response = requests.get('https://api.vk.com/method/groups.get?',
@@ -67,7 +61,12 @@ def get_admins_groups():
         'v': version
         }
         )
-    return (response.json()['response']['items'])
+    result = response.json()['response']['items']
+    try:
+        result.remove(174746452)
+    except:
+        pass
+    return result
 
 def count_subscribers(link):
     personally_token, user_id = get_data()
@@ -87,15 +86,10 @@ def groups() -> dict:
     '{id:subs}'
     admins_groups = get_admins_groups()
     grops_count_subscribers = []
-    for i in admins_groups:
-        grops_count_subscribers.append(count_subscribers(i))
+    for id in admins_groups:
+        grops_count_subscribers.append(count_subscribers(id))
     groups = dict(zip(admins_groups,grops_count_subscribers))
     groups = {i: j for i, j in groups.items() if j!=None }
-    with open('groups.txt','w') as a:
-        group_link,group_subscribers = list(groups.keys()),list(groups.values())
-        for i in range(0,len(group_link)):
-            a.write(f'{group_link[i]}:{group_subscribers[i]}\n')
-        a.close()
     return groups
 
 def create_photos():
