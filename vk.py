@@ -33,17 +33,17 @@ def captcha_solved():
     print('Captcha key = ',job.get_captcha_text())
     return (job.get_captcha_text())
 
-def generate_random_string():
+def generate_random_string(lenght):
     vowels = consonants = []
     vowels = [x for x in list(string.ascii_lowercase) if x in 'aeiouy']
     consonants = [x for x in list(string.ascii_lowercase) if x not in 'aeiouy']
 
     result = ''
-    for i in range(3):
+    for _ in range(lenght):
         result += random.choice(consonants)
         result += random.choice(vowels)
     else:
-        for i in range(2): result += random.choice(list(string.digits))
+        for _ in range(lenght-1): result += random.choice(list(string.digits))
 
     return result.capitalize()
 names = []
