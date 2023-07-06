@@ -289,10 +289,10 @@ async def cmd(message: types.Message, state: FSMContext):
 
 async def check_ip_r(message:types.Message):
     try:
-        ip = session.get("http://httpbin.org/ip", timeout=10).text
+        ip = session.get("http://httpbin.org/ip", timeout=15).text
+        await message.answer('IP:' + re.search(r'\d{2,}.\d{2,}.\d{2,}.\d{2,}', ip)[0] )
     except:
         await message.answer('Bad internet connection!')    
-    await message.answer('IP:' + re.search(r'\d{2,}.\d{2,}.\d{2,}.\d{2,}', ip)[0] )
 
 async def get_balance(message:types.Message):
     await message.answer(get_balance_r())
