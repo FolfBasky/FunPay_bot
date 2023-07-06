@@ -109,7 +109,6 @@ def create_photos():
     for y in range(0,img.width + round(img.width/10),a):
         for x in range(0,img.width + round(img.width/10),len(i)*66 + 40):
             idraw.text((10+1*x, 0+1.25*y),font = font, text = i,fill= color,align='center',  stroke_width=2)
-    idraw.shape((img.width, img.height), fill=color)
     img.save('test.jpg')
 
     img = Image.new('RGB', (1590, 530), i)
