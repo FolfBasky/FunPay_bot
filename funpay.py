@@ -226,25 +226,24 @@ def create_lot(deleted = "", offer_id:str = '0'):
     ds_list = [['🔥ГРУППА VK','ПОДПИСЧИКОВ🔥 ✅ПОД ВАШУ ТЕМАТИКУ✅БЕЗ БАНА✅ПЕРЕДАЧА ПРАВ ВЛАДЕЛЬЦА✅'],
                ['🔥Живой паблик','подписчиков 🔥СООБЩЕСТВО ДЛЯ СТАРТА🔥БЕЗ БЛОКИРОВКИ 🔥'],
                ['Вк группа под смену тематики/ высшее качество 🔥', 'подписчиков']]
-    subscribers = []
-    link = []
     describe = random.choice(ds_list)
     groups_data = vk.groups()
     with open('data.py','r') as e:
         kef = e.readlines()[0].strip().split()[2]
         kef = float(kef)
+
     for el in groups_data.items():
         url,subs = el
-        screen_name = requests.get('https://api.vk.com/method/groups.getById?',
-        params = {
-        'group_id' : url,
-        'access_token': personally_token,
-        'v': vk.version
-        }
-        ).json()['response'][0]['screen_name']
-
-        subscribers.append(subs)
-        link.append(url)
+        try:
+            screen_name = requests.get('https://api.vk.com/method/groups.getById?',
+                params = {
+                'group_id' : url,
+                'access_token': personally_token,
+                'v': vk.version
+                }
+            ,timeout=10).json()['response'][0]['screen_name']     
+        except:
+            screen_name = url   
         
         headers1 = {
         'accept': 'application/json, text/javascript, */*; q=0.01',
