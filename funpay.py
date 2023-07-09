@@ -261,7 +261,7 @@ def create_lot(deleted = "", offer_id:str = '0'):
             "fields[followers]": subs if deleted == "" else "",
             "fields[summary][ru]": f'{describe[0]} {str(subs)} {describe[1]}' if deleted == "" else "",
             "fields[summary][en]": "",
-            "fields[desc][ru]":'Передаю права владельца',#'Ссылка на группу: https://vk.com/'+ screen_name,
+            "fields[desc][ru]":'Передаю права владельца. Ссылка на группу: https://vk.com/'+ screen_name,
             "fields[desc][en]": "",
             "price": str(round(int(subs)/10 * kef)) if deleted == "" else "",
             "active": "off" if deleted == "" else "", 
