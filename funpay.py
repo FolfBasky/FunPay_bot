@@ -538,16 +538,113 @@ def logout():
     except Exception as e:
         return [False, e]
 
-def change_account():
+def change_account(login = 'jerk37673@gmail.com', active = 1):
     from sql import set_active_status_accounts, set_account_active, get_first_active_account_info
     set_active_status_accounts()
-    set_account_active(login = 'jerk37673@gmail.com', active = 1)
+    set_account_active(login, active)
     print(get_first_active_account_info())
 
+def register_account(nickname, email, password):
+    'register account'
+    response = session.get(url:='https://funpay.com/account/register')
+    soup = BeautifulSoup(response.text, 'lxml')
+    csrf_token = re.search(r'csrf_token.{0,}=.{0,}"',response.text)[0].split()[1][7:-1]
+    site_key = soup.find_all('div', class_='g-recaptcha')[0]['data-sitekey']
+    
+    headers = {
+        'accept': 'application/json, text/javascript, */*; q=0.01',
+        'content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
+        'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 YaBrowser/23.5.4.696 Yowser/2.5 Safari/537.36',
+        'x-requested-with': 'XMLHttpRequest',
+        }
+
+    data = {
+        'csrf_token':csrf_token,
+        'name':nickname,
+        'email':email,
+        'password':password,
+        'g-recaptcha-response':recaptcha(site_key, url=url),
+        'agreement': 'on',
+        'captchaHidden': '1'
+        }
+    
+    response = session.post('https://funpay.com/account/registerAction', data=data, headers=headers)
+    try:
+        if response.json()['errors'] == []: return True
+    except Exception as e:
+        print(e)
+
+def activate_account(url):
+    'after register account, you get a link on your email'
+    session.get(url)
+
+def pass_the_test(phone):
+    'when the account is just activatet, you need to pass the test'
+    logging_()
+    global headers
+    headers = {
+        'accept': 'application/json, text/javascript, */*; q=0.01',
+        'content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
+        'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 YaBrowser/23.5.4.696 Yowser/2.5 Safari/537.36',
+        'x-requested-with': 'XMLHttpRequest',
+        }
+
+    data = {
+        'accept':'1',
+        }
+
+    response = session.post('https://funpay.com/trade/acceptRules', data=data, headers=headers)
+
+    response = session.post(url:='https://funpay.com/account/phone')
+    soup = BeautifulSoup(response.text, 'lxml')
+    site_key = soup.find_all('div', class_='g-recaptcha')[0]['data-sitekey']
+    csrf_token = re.search(r'csrf_token.{0,}=.{0,}"',response.text)[0].split()[1][7:-1]
+
+    global data_n
+    data_n = {
+        'csrf_token': csrf_token,
+        'mode': 'phone',
+        'phone': phone,
+        'g-recaptcha-response': recaptcha(site_key, url=url),
+        'code':'' 
+        }
+
+    response = session.post('https://funpay.com/account/phoneVerification',data=data_n, headers=headers)
+
+    return not response.json()['error']
+
+def pass_the_test_code(code):
+    'enter code to confirm phone'
+    global data_n, headers
+    try:
+        response = session.post(url:='https://funpay.com/account/phone')
+        soup = BeautifulSoup(response.text, 'lxml')
+        site_key = soup.find_all('div', class_='g-recaptcha')[0]['data-sitekey']
+        data_n['code'] = code
+        data_n['g-recaptcha-response'] = recaptcha(site_key, url=url)
+        response = session.post('https://funpay.com/account/phoneVerification',data=data_n, headers=headers)
+    except:
+        pass
+    finally:
+        del data_n, headers
+    
+    return not response.json()['error']
+
 def main():
-    change_account()
+    """from tg_new import generate_random_string
+    if not register_account(nickname='JohnWolk1223',email=, password=(password:=generate_random_string(4))):
+        print('Fail')
+    print(password)
+    url = input('Enter url: ')
+    activate_account(url)"""
+    #from sql import add_user_profile
+    #add_user_profile(1,'johnwolk338@gmail.com','Vecolozy809','89317095287')
+    change_account('johnwolk338@gmail.com')
+    pass_the_test('89317095287')
+    pass_the_test_code(input('Enter code: '))
+    '''change_account()
     print(logging_())
-    print(logout())
+    print(logout())'''
     #collect_chats()
     #print(get_nickname())
     #print(check_messages(collect_chats()[0][2]))

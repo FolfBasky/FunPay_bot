@@ -101,6 +101,95 @@ async def logouting(message: types.Message):
     if res[0]: await message.answer('Succesfull')
     else: await message.answer('Failed!\n{}'.format(res[1]))
 
+
+
+class RegisterAccountStates(StatesGroup):
+    nickname = State()
+    email = State()
+    phone = State()
+    link = State()
+    code = State()
+
+@dp.message_handler(commands='register_account', state='*')
+async def register_account_(message: types.Message):
+    await message.answer('Enter nickname:')
+    await RegisterAccountStates.nickname.set()
+
+@dp.message_handler(lambda message: len(message) >= 3 and len(message) <= 20, state=RegisterAccountStates.nickname)
+async def register_account_(message: types.Message, state: FSMContext):
+    async with state.proxy as data:
+        data['nickname'] = message.text
+    await message.answer('Enter email:')
+    await RegisterAccountStates.email.set()
+
+@dp.message_handler(state=RegisterAccountStates.nickname)
+async def register_account_(message: types.Message):
+    await message.answer('Invalid data! Nickname should be 3-20 charackters')
+
+@dp.message_handler(lambda message: '@gmail.com' in message , state=RegisterAccountStates.email)
+async def register_account_(message: types.Message, state: FSMContext):
+    async with state.proxy as data:
+        data['email'] = message.text
+    await message.answer('Enter phone number:')
+    await RegisterAccountStates.phone.set()
+
+@dp.message_handler(state=RegisterAccountStates.email)
+async def register_account_(message: types.Message):
+    await message.answer('Invalid data! "@gmail.com" should be in email!')
+
+@dp.message_handler(lambda message: re.match(r'^((8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7,10}$', message), state=RegisterAccountStates.phone)
+async def register_account_(message: types.Message, state: FSMContext):
+    try:
+        async with state.proxy as data:
+            data['phone'] = message.text
+            if not add_user_profile(1,email := data['email'], password := generate_random_string(8), data['phone']): raise Exception
+            nickname = data['nickname']
+        await message.answer('Data was succesfully writed!')
+        await message.answer('Creating account! Wait...')
+
+        
+        if not register_account(nickname, email, password): raise Exception
+        else: await message.answer('Account was succesfully created! Enter link from email:')
+
+    except Exception as e:
+        await message.answer(e)
+        await state.finish()
+
+    await RegisterAccountStates.link.set()
+
+@dp.message_handler(state=RegisterAccountStates.phone)
+async def register_account_(message: types.Message):
+    await message.answer('Invalid data! Example: "89000000000"')
+
+@dp.message_handler(lambda message: 'https://funpay.com' in message, state=RegisterAccountStates.link)
+async def register_account_(message: types.Message, state: FSMContext):
+    activate_account(message.text)
+    await message.answer('Account was succesfully activated!')
+    await message.answer('Last step! Wait while bot solved the test...')
+    async with state.proxy as data:
+        phone = data['phone']
+    if pass_the_test(phone): 
+        await message.answer('Enter code, that was sended on you number:')
+        await RegisterAccountStates.code.set()
+    else: 
+        await message.answer('Something was wrong!')
+
+@dp.message_handler(state=RegisterAccountStates.link)
+async def register_account_(message: types.Message):
+    await message.answer('Invalid data! Enter correct link')
+
+@dp.message_handler(lambda message: message.isdigit(),state=RegisterAccountStates.code)
+async def register_account_(message: types.Message, state: FSMContext):
+    if pass_the_test_code(message.text): await message.answer('Phone was succesfully confirmed!')
+    else: await message.answer('Something was wrong!')
+    await state.finish()
+
+@dp.message_handler(state=RegisterAccountStates.code)
+async def register_account_(message: types.Message):
+    await message.answer('Invalid data! Enter correct code!')
+
+
+
 async def vk_keys(message: types.Message):
     await message.answer('VK module', reply_markup=keyboard_vk)
     #await message.answer(message.chat.id)
