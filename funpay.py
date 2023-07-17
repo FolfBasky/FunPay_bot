@@ -611,7 +611,7 @@ def pass_the_test(phone):
 
     response = session.post('https://funpay.com/account/phoneVerification',data=data_n, headers=headers)
 
-    return not response.json()['error']
+    return response.json()['error']
 
 def pass_the_test_code(code):
     'enter code to confirm phone'
@@ -628,7 +628,7 @@ def pass_the_test_code(code):
     finally:
         del data_n, headers
     
-    return not response.json()['error']
+    return response.json()['error']
 
 def main():
     """from tg_new import generate_random_string
@@ -640,8 +640,8 @@ def main():
     #from sql import add_user_profile
     #add_user_profile(1,'johnwolk338@gmail.com','Vecolozy809','89317095287')
     change_account('johnwolk338@gmail.com')
-    pass_the_test('89317095287')
-    pass_the_test_code(input('Enter code: '))
+    print(pass_the_test('89317095287'))
+    print(pass_the_test_code(input('Enter code: ')))
     '''change_account()
     print(logging_())
     print(logout())'''
