@@ -580,7 +580,10 @@ def activate_account(url):
 
 def pass_the_test(phone):
     'when the account is just activatet, you need to pass the test'
-    logging_()
+    try:
+        logging_()
+    except:
+        pass
     global headers
     headers = {
         'accept': 'application/json, text/javascript, */*; q=0.01',
