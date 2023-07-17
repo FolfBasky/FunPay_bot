@@ -30,6 +30,10 @@ keyboard_tor.add(*["/start_bot","/check_message","/check_sales", "/refund_orders
 keyboard_main.add(*["/start_bot","/change_kef","/get_account", "/add_account","/edit_account","/delete_account","/vk","/tor"])
 yes_no.add(*["Y","N"])
 
+@dp.message_handler(commands='cancel',state='*')
+async def register_account_(message: types.Message, state: FSMContext):
+    await message.answer('Canceled!')
+    await state.finish()
 
 def change_k(new_kef):
     with open('data.py') as a:
@@ -187,11 +191,6 @@ async def register_account_(message: types.Message, state: FSMContext):
 @dp.message_handler(state=RegisterAccountStates.code)
 async def register_account_(message: types.Message):
     await message.answer('Invalid data! Enter correct code!')
-
-@dp.message_handler(commands='cancel',state='*')
-async def register_account_(message: types.Message, state: FSMContext):
-    await message.answer('Canceled!')
-    await state.finish()
 
 
 async def vk_keys(message: types.Message):
