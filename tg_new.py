@@ -188,7 +188,7 @@ async def register_account_(message: types.Message, state: FSMContext):
 async def register_account_(message: types.Message):
     await message.answer('Invalid data! Enter correct code!')
 
-@dp.message_handler(command='cancel',state='*')
+@dp.message_handler(commands='cancel',state='*')
 async def register_account_(message: types.Message, state: FSMContext):
     await message.answer('Canceled!')
     await state.finish()
