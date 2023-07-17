@@ -117,7 +117,7 @@ async def register_account_(message: types.Message):
 
 @dp.message_handler(lambda message: len(message.text) >= 3 and len(message.text) <= 20, state=RegisterAccountStates.nickname)
 async def register_account_(message: types.Message, state: FSMContext):
-    async with state.proxy as data:
+    async with state.proxy() as data:
         data['nickname'] = message.text
     await message.answer('Enter email:')
     await RegisterAccountStates.email.set()
@@ -128,7 +128,7 @@ async def register_account_(message: types.Message):
 
 @dp.message_handler(lambda message: '@gmail.com' in message.text , state=RegisterAccountStates.email)
 async def register_account_(message: types.Message, state: FSMContext):
-    async with state.proxy as data:
+    async with state.proxy() as data:
         data['email'] = message.text
     await message.answer('Enter phone number:')
     await RegisterAccountStates.phone.set()
@@ -140,7 +140,7 @@ async def register_account_(message: types.Message):
 @dp.message_handler(lambda message: re.match(r'^((8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7,10}$', message.text), state=RegisterAccountStates.phone)
 async def register_account_(message: types.Message, state: FSMContext):
     try:
-        async with state.proxy as data:
+        async with state.proxy() as data:
             data['phone'] = message.text
             if not add_user_profile(1,email := data['email'], password := generate_random_string(8), data['phone']): raise Exception
             nickname = data['nickname']
@@ -166,7 +166,7 @@ async def register_account_(message: types.Message, state: FSMContext):
     activate_account(message.text)
     await message.answer('Account was succesfully activated!')
     await message.answer('Last step! Wait while bot solved the test...')
-    async with state.proxy as data:
+    async with state.proxy() as data:
         phone = data['phone']
     if pass_the_test(phone): 
         await message.answer('Enter code, that was sended on you number:')
