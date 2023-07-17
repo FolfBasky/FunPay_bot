@@ -115,7 +115,7 @@ async def register_account_(message: types.Message):
     await message.answer('Enter nickname:')
     await RegisterAccountStates.nickname.set()
 
-@dp.message_handler(lambda message: len(message) >= 3 and len(message) <= 20, state=RegisterAccountStates.nickname)
+@dp.message_handler(lambda message: len(message.text) >= 3 and len(message.text) <= 20, state=RegisterAccountStates.nickname)
 async def register_account_(message: types.Message, state: FSMContext):
     async with state.proxy as data:
         data['nickname'] = message.text
@@ -126,7 +126,7 @@ async def register_account_(message: types.Message, state: FSMContext):
 async def register_account_(message: types.Message):
     await message.answer('Invalid data! Nickname should be 3-20 charackters')
 
-@dp.message_handler(lambda message: '@gmail.com' in message , state=RegisterAccountStates.email)
+@dp.message_handler(lambda message: '@gmail.com' in message.text , state=RegisterAccountStates.email)
 async def register_account_(message: types.Message, state: FSMContext):
     async with state.proxy as data:
         data['email'] = message.text
@@ -137,7 +137,7 @@ async def register_account_(message: types.Message, state: FSMContext):
 async def register_account_(message: types.Message):
     await message.answer('Invalid data! "@gmail.com" should be in email!')
 
-@dp.message_handler(lambda message: re.match(r'^((8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7,10}$', message), state=RegisterAccountStates.phone)
+@dp.message_handler(lambda message: re.match(r'^((8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7,10}$', message.text), state=RegisterAccountStates.phone)
 async def register_account_(message: types.Message, state: FSMContext):
     try:
         async with state.proxy as data:
@@ -161,7 +161,7 @@ async def register_account_(message: types.Message, state: FSMContext):
 async def register_account_(message: types.Message):
     await message.answer('Invalid data! Example: "89000000000"')
 
-@dp.message_handler(lambda message: 'https://funpay.com' in message, state=RegisterAccountStates.link)
+@dp.message_handler(lambda message: 'https://funpay.com' in message.text, state=RegisterAccountStates.link)
 async def register_account_(message: types.Message, state: FSMContext):
     activate_account(message.text)
     await message.answer('Account was succesfully activated!')
@@ -178,7 +178,7 @@ async def register_account_(message: types.Message, state: FSMContext):
 async def register_account_(message: types.Message):
     await message.answer('Invalid data! Enter correct link')
 
-@dp.message_handler(lambda message: message.isdigit(),state=RegisterAccountStates.code)
+@dp.message_handler(lambda message: message.text.isdigit(),state=RegisterAccountStates.code)
 async def register_account_(message: types.Message, state: FSMContext):
     if pass_the_test_code(message.text): await message.answer('Phone was succesfully confirmed!')
     else: await message.answer('Something was wrong!')
@@ -188,6 +188,10 @@ async def register_account_(message: types.Message, state: FSMContext):
 async def register_account_(message: types.Message):
     await message.answer('Invalid data! Enter correct code!')
 
+@dp.message_handler(command='cancel',state='*')
+async def register_account_(message: types.Message, state: FSMContext):
+    await message.answer('Canceled!')
+    await state.finish()
 
 
 async def vk_keys(message: types.Message):
