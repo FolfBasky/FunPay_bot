@@ -130,7 +130,7 @@ async def register_account_(message: types.Message, state: FSMContext):
 async def register_account_(message: types.Message):
     await message.answer('Invalid data! Nickname should be 3-20 charackters')
 
-@dp.message_handler(lambda message: '@ in message.text , state=RegisterAccountStates.email)
+@dp.message_handler(lambda message: '@' in message.text , state=RegisterAccountStates.email)
 async def register_account_(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
         data['email'] = message.text
