@@ -635,7 +635,8 @@ def pass_the_test_code(code):
     finally:
         del data_n, headers
     
-    return response.json()['error']
+    if response.json()['error']: return True
+    else: return False
 
 def main():
     """from tg_new import generate_random_string
