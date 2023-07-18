@@ -625,10 +625,10 @@ def pass_the_test_code(code):
     try:
         data_n['mode'] = 'code'
         data_n['code'] = code
-        #response = session.post(url:='https://funpay.com/account/phone')
-        #soup = BeautifulSoup(response.text, 'lxml')
-        #site_key = soup.find_all('div', class_='g-recaptcha')[0]['data-sitekey']
-        data_n['g-recaptcha-response'] = ''#recaptcha(site_key, url=url)
+        response = session.post(url:='https://funpay.com/account/phone')
+        soup = BeautifulSoup(response.text, 'lxml')
+        site_key = soup.find_all('div', class_='g-recaptcha')[0]['data-sitekey']
+        data_n['g-recaptcha-response'] = recaptcha(site_key, url=url)
         response = session.post('https://funpay.com/account/phoneVerification',data=data_n, headers=headers)
     except:
         pass
