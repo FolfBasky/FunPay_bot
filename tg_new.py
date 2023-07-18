@@ -184,7 +184,7 @@ async def register_account_(message: types.Message):
 
 @dp.message_handler(lambda message: message.text.isdigit(),state=RegisterAccountStates.code)
 async def register_account_(message: types.Message, state: FSMContext):
-    if pass_the_test_code(message.text): await message.answer('Phone was succesfully confirmed!')
+    if not pass_the_test_code(message.text): await message.answer('Phone was succesfully confirmed!')
     else: await message.answer('Something was wrong!')
     await state.finish()
 
