@@ -547,7 +547,7 @@ def change_account(login = 'jerk37673@gmail.com', active = 1):
     print(get_first_active_account_info())
 
 def register_account(nickname, email, password):
-    'register account'
+    'register account, return True if success'
     response = session.get(url:='https://funpay.com/account/register')
     soup = BeautifulSoup(response.text, 'lxml')
     csrf_token = re.search(r'csrf_token.{0,}=.{0,}"',response.text)[0].split()[1][7:-1]

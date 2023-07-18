@@ -144,16 +144,19 @@ async def register_account_(message: types.Message):
 @dp.message_handler(lambda message: re.match(r'^((8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7,10}$', message.text), state=RegisterAccountStates.phone)
 async def register_account_(message: types.Message, state: FSMContext):
     try:
+        
+        await message.answer('Creating account! Wait...')
+        if not register_account(nickname, email, password): raise Exception
+        else: await message.answer('Account was succesfully created!')
+        
         async with state.proxy() as data:
             data['phone'] = message.text
             if not add_user_profile(1,email := data['email'], password := generate_random_string(8), data['phone']): raise Exception
             nickname = data['nickname']
-        await message.answer('Data was succesfully writed!')
-        await message.answer('Creating account! Wait...')
+
+        await message.answer('Data was succesfully writed! Enter link from email:'')
 
         
-        if not register_account(nickname, email, password): raise Exception
-        else: await message.answer('Account was succesfully created! Enter link from email:')
 
     except Exception as e:
         await message.answer(e)
