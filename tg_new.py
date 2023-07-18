@@ -172,7 +172,7 @@ async def register_account_(message: types.Message, state: FSMContext):
     await message.answer('Last step! Wait while bot solved the test...')
     async with state.proxy() as data:
         phone = data['phone']
-    if pass_the_test(phone): 
+    if not pass_the_test(phone): 
         await message.answer('Enter code, that was sended on you number:')
         await RegisterAccountStates.code.set()
     else: 
