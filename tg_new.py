@@ -130,7 +130,7 @@ async def register_account_(message: types.Message, state: FSMContext):
 async def register_account_(message: types.Message):
     await message.answer('Invalid data! Nickname should be 3-20 charackters')
 
-@dp.message_handler(lambda message: '@gmail.com' in message.text , state=RegisterAccountStates.email)
+@dp.message_handler(lambda message: '@ in message.text , state=RegisterAccountStates.email)
 async def register_account_(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
         data['email'] = message.text
@@ -139,7 +139,7 @@ async def register_account_(message: types.Message, state: FSMContext):
 
 @dp.message_handler(state=RegisterAccountStates.email)
 async def register_account_(message: types.Message):
-    await message.answer('Invalid data! "@gmail.com" should be in email!')
+    await message.answer('Invalid data! "@" should be in email!')
 
 @dp.message_handler(lambda message: re.match(r'^((8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7,10}$', message.text), state=RegisterAccountStates.phone)
 async def register_account_(message: types.Message, state: FSMContext):
