@@ -578,8 +578,10 @@ def activate_account(url):
     'after register account, you get a link on your email'
     session.get(url)
 
-def pass_the_test(phone):
-    'when the account is just activatet, you need to pass the test'
+def pass_the_test(phone) -> bool:
+    '''when the account is just activatet, you need to pass the test
+    #? return False if all was success '''
+
     try:
         logging_()
     except:
@@ -614,17 +616,19 @@ def pass_the_test(phone):
 
     response = session.post('https://funpay.com/account/phoneVerification',data=data_n, headers=headers)
 
-    return response.json()['error']
+    if response.json()['error']: return True
+    else: return False
 
 def pass_the_test_code(code):
     'enter code to confirm phone'
     global data_n, headers
     try:
-        response = session.post(url:='https://funpay.com/account/phone')
-        soup = BeautifulSoup(response.text, 'lxml')
-        site_key = soup.find_all('div', class_='g-recaptcha')[0]['data-sitekey']
+        data_n['mode'] = 'code'
         data_n['code'] = code
-        data_n['g-recaptcha-response'] = recaptcha(site_key, url=url)
+        #response = session.post(url:='https://funpay.com/account/phone')
+        #soup = BeautifulSoup(response.text, 'lxml')
+        #site_key = soup.find_all('div', class_='g-recaptcha')[0]['data-sitekey']
+        data_n['g-recaptcha-response'] = ''#recaptcha(site_key, url=url)
         response = session.post('https://funpay.com/account/phoneVerification',data=data_n, headers=headers)
     except:
         pass
@@ -642,7 +646,7 @@ def main():
     activate_account(url)"""
     #from sql import add_user_profile
     #add_user_profile(1,'johnwolk338@gmail.com','Vecolozy809','89317095287')
-    change_account('johnwolk338@gmail.com')
+    #change_account('johnwolk338@gmail.com')
     print(pass_the_test('89317095287'))
     print(pass_the_test_code(input('Enter code: ')))
     '''change_account()
