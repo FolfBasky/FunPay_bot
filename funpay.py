@@ -118,7 +118,7 @@ def logging_():
         lg = logging_data['card_number'][-4:]
     else:
         if '' in response.text or True:
-            return response.text
+            print( response.text )
         else: 
             return 'Fail last num!'
     data = {
