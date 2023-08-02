@@ -26,7 +26,7 @@ keyboard_main = types.ReplyKeyboardMarkup(resize_keyboard=True)
 yes_no = types.ReplyKeyboardMarkup(resize_keyboard=True)
 
 keyboard_vk.add(*["/info","/get_vk_profiles","/add_account_vk","/delete_vk_profile","/set_vk_profile","/clear_groups","/post","/create_groupes", "/kill_admins_vk","/main","/tor"])
-keyboard_tor.add(*["/start_bot","/register_account","/check_message","/check_sales", "/refund_orders","/check_orders", "/complete_orders","/send_message","/create_slots","/delete_slots","/edit_lot","/check_lots","/get_balance","/check_balance_operations","/withdrow_balance", "/cancel_operations_balances","/up","/auto","/check_ip","/check_feedbacks","/logout","/main","/vk"])
+keyboard_tor.add(*["/start_bot","/check_message","/check_sales", "/refund_orders","/check_orders", "/complete_orders","/send_message","/create_slots","/delete_slots","/edit_lot","/check_lots","/get_balance","/check_balance_operations","/withdrow_balance", "/cancel_operations_balances","/up","/auto","/check_ip","/check_feedbacks","/logout","/register_account","/main","/vk"])
 keyboard_main.add(*["/start_bot","/change_kef","/get_account", "/add_account","/edit_account","/delete_account","/vk","/tor"])
 yes_no.add(*["Y","N"])
 
