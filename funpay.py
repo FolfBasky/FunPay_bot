@@ -117,8 +117,8 @@ def logging_():
     elif response.text.lower().find('карта') != -1:
         lg = logging_data['card_number'][-4:]
     else:
-        if '' in response.text or True:
-            print( response.text )
+        if 'Страница не найдена' in response.text:
+            return
         else: 
             return 'Fail last num!'
     data = {
