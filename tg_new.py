@@ -463,7 +463,7 @@ class Refund_orders_states(StatesGroup):
     oper_id = State()
 
 async def refund_orders(message: types.Message):
-    markup = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     markup.add('/cancel')
     await message.answer('Enter operation hashtag: ', reply_markup=markup)
     await Refund_orders_states.oper_id.set()
