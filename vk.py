@@ -64,6 +64,7 @@ def get_admins_groups():
     result = response.json()['response']['items']
     try:
         #result.remove(174746452)
+        ...
     except:
         pass
     return result
