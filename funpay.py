@@ -652,9 +652,9 @@ def main():
     activate_account(url)"""
     #from sql import add_user_profile
     #add_user_profile(1,'johnwolk338@gmail.com','Vecolozy809','89317095287')
-    change_account('loise.joi@yandex.ru')
+    '''change_account('loise.joi@yandex.ru')
     print(pass_the_test('89317095287'))
-    print(pass_the_test_code(input('Enter code: ')))
+    print(pass_the_test_code(input('Enter code: ')))'''
     '''change_account()
     print(logging_())
     print(logout())'''
@@ -662,7 +662,7 @@ def main():
     #print(get_nickname())
     #print(check_messages(collect_chats()[0][2]))
     #print(check_sale('#GYPLRXRJ'))
-
+    ...
 if __name__ == '__main__':
     #validate_ip()
     main()

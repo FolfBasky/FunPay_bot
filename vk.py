@@ -63,6 +63,7 @@ def get_admins_groups():
         )
     result = response.json()['response']['items']
     try:
+        #result = [219067960,218599383,219067963,200720007,174746452]
         #result.remove(174746452)
         ...
     except:
@@ -162,7 +163,7 @@ def lock_all(links):
             'description': '',#'Здесь вы можете купить любую группу ВК по низкой цене!',
             #'screen_name': name + str(random.randint(0,1000)),
             'website':'',
-            'access' : 2,
+            'access' : 0,
             'subject': 3,
             'wall': 2,
             'topics': 0,
