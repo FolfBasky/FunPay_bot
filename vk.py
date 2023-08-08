@@ -63,7 +63,7 @@ def get_admins_groups():
         )
     result = response.json()['response']['items']
     try:
-        #result = [219067960,218599383,219067963,200720007,174746452]
+        result = [219067960,218599383,219067963,200720007,174746452]
         #result.remove(174746452)
         ...
     except:
