@@ -475,7 +475,7 @@ async def cmd(message: types.Message, state: FSMContext):
 
 @dp.message_handler(commands='cancel', state=Refund_orders_states.oper_id)
 async def cmd(message: types.Message, state: FSMContext):
-    await message.answer('Canceled!', reply_markup=keyboard_tor)
+    await message.answer('Canceled!', reply_markup=keyboard_main)
     await state.finish()
 
 async def check_feedbacks(message: types.Message):
