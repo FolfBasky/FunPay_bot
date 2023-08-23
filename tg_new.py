@@ -177,11 +177,16 @@ async def register_account_(message: types.Message, state: FSMContext):
     await message.answer('Last step! Wait while bot solved the test...')
     async with state.proxy() as data:
         phone = data['phone']
-    if not pass_the_test(phone): 
-        await message.answer('Enter code, that was sended on you number:')
-        await RegisterAccountStates.code.set()
-    else: 
-        await message.answer('Something was wrong!')
+        set_active_status_accounts()
+        set_account_active(login=data['email'])
+    try:
+        if not pass_the_test(phone): 
+            await message.answer('Enter code, that was sended on you number:')
+            await RegisterAccountStates.code.set()
+        else: 
+            await message.answer('Something was wrong!')
+    except Exception as e:
+        await message.answer(e)
 
 @dp.message_handler(state=RegisterAccountStates.link)
 async def register_account_(message: types.Message):

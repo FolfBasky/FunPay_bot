@@ -7,6 +7,7 @@ import random
 from http.cookiejar import CookieJar
 import vk
 import time
+from sql import set_account_active, set_active_status_accounts
 
 data_st = {
     'csrf_token':'',
@@ -578,6 +579,7 @@ def register_account(nickname, email, password):
         if response.json()['errors'] == []: return True
     except Exception as e:
         print(e)
+    
 
 def activate_account(url):
     'after register account, you get a link on your email'
@@ -621,7 +623,7 @@ def pass_the_test(phone) -> bool:
 
     response = session.post('https://funpay.com/account/phoneVerification',data=data_n, headers=headers)
 
-    if response.json()['error']: return True
+    if response.json()['error']:return True
     else: return False
 
 def pass_the_test_code(code):
