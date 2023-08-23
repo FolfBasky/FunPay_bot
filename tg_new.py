@@ -178,7 +178,7 @@ async def register_account_(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
         phone = data['phone']
         set_active_status_accounts()
-        set_account_active(login=data['email'])
+        set_account_active(login=data['email'], active=1)
     try:
         if not pass_the_test(phone): 
             await message.answer('Enter code, that was sended on you number:')
