@@ -262,11 +262,28 @@ async def up(message: types.Message):
     await message.answer(up_lots())
 
 async def auto(message: types.Message):
+    try:
+        if auto_message:
+            await message.answer('Bot have restart succesfully!')
+        else:
+            await message.answer('Bot havent restart!')
+    except:
+        pass 
+    finally:
+        global auto_message
+        auto_message = False
     storage_last_message = []
     global auto_while
     auto_while = True
     while auto_while:
-        lst = up_lots()
+        try:
+            lst = up_lots()
+        except requests.ConnectionError:
+            await message.answer('Bad internet, bot will restart after 10 minutes!')
+            await asyncio.sleep(60*10)
+            global auto_message
+            auto_message = True
+            await auto()
         if 'Slot' in lst: await message.answer(lst)
         elif 'Fail' == lst:
             await message.answer('Session was down\nWaiting...')
