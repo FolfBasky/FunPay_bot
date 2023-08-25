@@ -80,12 +80,23 @@ async def start(message: types.Message):
 @dp.message_handler(lambda message: 'Y' == (message.text).upper(), state = Start_states.choice)
 async def cmd(message: types.Message, state: FSMContext):
     await message.answer('Conecting...')
-    res = logging_()
-    if res == None:
-        await message.reply('Session is active',reply_markup=keyboard_tor)
-    else:
-        await message.reply(res, reply_markup=keyboard_main)
-    await state.finish()
+    global session_status
+    
+    try:
+        if session_status: 
+            await message.answer('Session is alredy active!')
+        else:
+            res = logging_()
+            if res == None:
+                await message.reply('Session is active',reply_markup=keyboard_tor)
+                session_status = True
+            else:
+                await message.reply(res, reply_markup=keyboard_main)
+                session_status = False
+    except:
+        session_status = False
+    finally:
+        await state.finish()
 
 @dp.message_handler(lambda message: 'N' == (message.text).upper(), state = Start_states.choice)
 async def cmd(message: types.Message, state: FSMContext):
@@ -99,11 +110,16 @@ async def cmd(message: types.Message, state: FSMContext):
 
 @dp.message_handler(commands='logout')
 async def logouting(message: types.Message):
-    global auto_while
+    global auto_while, session_status
     auto_while = False
-    res = logout()
-    if res[0]: await message.answer('Succesfull')
-    else: await message.answer('Failed!\n{}'.format(res[1]))
+    try:
+        res = logout()
+        if res[0] and session_status:
+            await message.answer('Succesfull')
+            session_status = False
+        else: await message.answer('Failed!\n{}'.format(res[1]))
+    except Exception as e:
+        await message.answer(e)
 
 
 
