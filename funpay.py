@@ -165,11 +165,14 @@ def collect_chats():
     except:
         count = 3
     # all_messages_count = len(soup.find_all('a', class_='contact-item'))
-    for x in range(count):
-        last_msg = ' '.join(soup.find_all('a', class_='contact-item')[x].text.strip().replace('\n', ' ').split()[1:])
-        link = soup.find_all('a', class_='contact-item')[x]['href'].strip().replace('\n', ' ')
-        username = soup.find_all('a', class_='contact-item')[x].contents[3].text.strip().replace('\n', ' ')
-        result.append([username, last_msg, link])
+    try:
+        for x in range(count):
+            last_msg = ' '.join(soup.find_all('a', class_='contact-item')[x].text.strip().replace('\n', ' ').split()[1:])
+            link = soup.find_all('a', class_='contact-item')[x]['href'].strip().replace('\n', ' ')
+            username = soup.find_all('a', class_='contact-item')[x].contents[3].text.strip().replace('\n', ' ')
+            result.append([username, last_msg, link])
+    except:
+        pass
     return result
 
 def check_messages(url):

@@ -230,12 +230,17 @@ async def main_page(message: types.Message):
     await message.answer('main page', reply_markup=keyboard_main)
 
 async def check_message(message: types.Message):
-    result = collect_chats()
-    for x in result:
-        await message.answer('\n'.join(check_messages(x[2])))
-        await message.answer(x[2])
-        await message.answer('#'*20)
-        await asyncio.sleep(1) 
+    try:
+        result = collect_chats()
+        for x in result:
+            msg = check_messages(x[2])
+            if len(msg) >= 1000: msg = msg[-1000:]
+            await message.answer('\n'.join(msg))
+            await message.answer(x[2])
+            await message.answer('#'*20)
+            await asyncio.sleep(1) 
+    except Exception as e:
+        await message.answer(e)
 
 class Msg_states(StatesGroup):
     link = State()
