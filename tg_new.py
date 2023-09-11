@@ -81,22 +81,21 @@ async def start(message: types.Message):
 async def cmd(message: types.Message, state: FSMContext):
     await message.answer('Conecting...')
     global session_status
-    
-    try:
-        if session_status: 
+    #try:
+    ''' if session_status: 
             await message.answer('Session is alredy active!')
-        else:
-            res = logging_()
-            if res == None:
-                await message.reply('Session is active',reply_markup=keyboard_tor)
-                session_status = True
-            else:
-                await message.reply(res, reply_markup=keyboard_main)
-                session_status = False
-    except:
+        else:'''
+    res = logging_()
+    if res == None:
+        await message.reply('Session is active',reply_markup=keyboard_tor)
+        session_status = True
+    else:
+        await message.reply(res, reply_markup=keyboard_main)
+        session_status = False
+    ''' except:
         session_status = False
     finally:
-        await state.finish()
+        await state.finish()'''
 
 @dp.message_handler(lambda message: 'N' == (message.text).upper(), state = Start_states.choice)
 async def cmd(message: types.Message, state: FSMContext):
