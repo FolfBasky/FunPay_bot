@@ -262,7 +262,6 @@ def create_lot(deleted = "", offer_id:str = '0'):
         data = {
             "csrf_token": data_st['csrf_token'],
             'form_created_at':	time.time(),
-            'offer_id':	"0",
             "offer_id": offer_id,
             "node_id": "699",
             "deleted": deleted,
@@ -344,19 +343,23 @@ def delete_slots():
 
         data = {
             "csrf_token": data_st['csrf_token'],
+            'form_created_at':	time.time(),
             "offer_id": x,
             "node_id": "699",
             "deleted": '1',
-            "fields[subject]": "Благотворительность",
+            'location':	"",
+            "fields[subject]": "Блогеры",
             "fields[followers]": "",
             "fields[summary][ru]": "",
             "fields[summary][en]": "",
-            "fields[desc][ru]": '',
+            "fields[desc][ru]":'',
             "fields[desc][en]": "",
-            "price": "",
-            "active": "on", 
-            "deactivate_after_sale[]": "on",
-            "location": "trade"
+            'fields[payment_msg][ru]':	"",
+            'fields[payment_msg][en]':	"",
+            'secrets':"",
+            'amount':"1",
+            "price": '',
+            "active": "off", 
         }
         response = session.post(url='https://funpay.com/lots/offerSave',data=data, headers=headers1)
         if response.status_code != 200:
