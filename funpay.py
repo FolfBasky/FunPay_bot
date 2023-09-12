@@ -261,19 +261,24 @@ def create_lot(deleted = "", offer_id:str = '0'):
 
         data = {
             "csrf_token": data_st['csrf_token'],
+            'form_created_at':	time.time(),
+            'offer_id':	"0",
             "offer_id": offer_id,
             "node_id": "699",
             "deleted": deleted,
-            "fields[subject]": "Благотворительность" if deleted == "" else "",
+            'location':	"",
+            "fields[subject]": "Блогеры" if deleted == "" else "",
             "fields[followers]": subs if deleted == "" else "",
             "fields[summary][ru]": f'{describe[0]} {str(subs)} {describe[1]}' if deleted == "" else "",
             "fields[summary][en]": "",
             "fields[desc][ru]":'Передаю права владельца. Ссылка на группу: https://vk.com/'+ screen_name,
             "fields[desc][en]": "",
+            'fields[payment_msg][ru]':	"",
+            'fields[payment_msg][en]':	"",
+            'secrets':"",
+            'amount':"1",
             "price": str(round(int(subs)/10 * kef)) if deleted == "" else "",
-            "active": "off" if deleted == "" else "", 
-            "deactivate_after_sale[]": "on" if deleted == "" else "",
-            "location": "trade"
+            "active": "off" if deleted == "" else "on", 
         }
 
         response = session.post(url='https://funpay.com/lots/offerSave',data=data, headers=headers1)
