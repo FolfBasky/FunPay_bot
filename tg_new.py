@@ -259,7 +259,7 @@ async def cmd(message: types.Message, state: FSMContext):
     await message.answer('Not correct link!', reply_markup=keyboard_tor)
     await state.finish()
 
-@dp.message_handler(lambda message: 'cancel' not in message.text.lower() and '/' not in message.text.lower(), state=Msg_states.text)
+@dp.message_handler(lambda message: 'cancel' not in message.text.lower() and '/send_message' not in message.text.lower(), state=Msg_states.text)
 async def cmd(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
         link = data['link']
