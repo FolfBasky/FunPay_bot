@@ -94,8 +94,8 @@ async def cmd(message: types.Message, state: FSMContext):
         session_status = False
     ''' except:
         session_status = False
-    finally:
-        await state.finish()'''
+    finally:'''
+    await state.finish()
 
 @dp.message_handler(lambda message: 'N' == (message.text).upper(), state = Start_states.choice)
 async def cmd(message: types.Message, state: FSMContext):
@@ -119,8 +119,6 @@ async def logouting(message: types.Message):
         else: await message.answer('Failed!\n{}'.format(res[1]))
     except Exception as e:
         await message.answer(e)
-
-
 
 class RegisterAccountStates(StatesGroup):
     nickname = State()
@@ -511,12 +509,15 @@ async def refund_orders(message: types.Message):
 
 @dp.message_handler( state=Refund_orders_states.oper_id)
 async def cmd(message: types.Message, state: FSMContext):
-    await message.answer(refund_order(message.text), reply_markup=keyboard_tor)
+    try:
+        await message.answer(refund_order(message.text), reply_markup=keyboard_tor)
+    except Exception as e:
+        await message.answer(e, reply_markup=keyboard_tor)
     await state.finish()
 
 @dp.message_handler(commands='cancel', state=Refund_orders_states.oper_id)
 async def cmd(message: types.Message, state: FSMContext):
-    await message.answer('Canceled!', reply_markup=keyboard_main)
+    await message.answer('Canceled!', reply_markup=keyboard_tor)
     await state.finish()
 
 async def check_feedbacks(message: types.Message):
