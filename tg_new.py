@@ -482,10 +482,8 @@ async def cmd(message: types.Message, state: FSMContext):
 class Complete_order_states(StatesGroup):
     oper_id = State()
 
-async def complete_orders(message: types.Message, state: FSMContext):
-    markup = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
-    markup.add(*[x.split('\n')[-1] for x in check_balance_operation()], '/cancel')
-    await message.answer('Enter oper id', reply_markup=markup)
+async def complete_orders(message: types.Message):
+    await message.answer('Enter oper id')
     await Complete_order_states.oper_id.set()
 
 @dp.message_handler( state = Complete_order_states.oper_id)
@@ -504,7 +502,7 @@ class Refund_orders_states(StatesGroup):
 async def refund_orders(message: types.Message):
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     markup.add('/cancel')
-    await message.answer('Enter operation hashtag: ', reply_markup=markup)
+    await message.answer('Enter operation hashtag: ')
     await Refund_orders_states.oper_id.set()
 
 @dp.message_handler( state=Refund_orders_states.oper_id)
