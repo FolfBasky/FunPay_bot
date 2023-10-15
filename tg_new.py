@@ -13,6 +13,7 @@ from data import kef
 bot = Bot(token="5571779165:AAFC8iMTKtS3PHR65IxIEqaB8R7KmbdN_YE")
 admin_chat_id = -778858479
 dp = Dispatcher(bot, storage=MemoryStorage())
+admin_id = 879165748
 
 async def posting(message: types.Message):
     links = [x for x in groups().keys()]  
@@ -71,7 +72,7 @@ class Start_states(StatesGroup):
     choice = State()
 
 async def start(message: types.Message):
-    if message.chat.id == admin_chat_id:
+    if message.from_user.id == admin_id:
         keyboard1= types.ReplyKeyboardMarkup(resize_keyboard=True)
         keyboard1.add('Y','N')
         await message.answer(f'Hi, {message.from_user.full_name}! \nStart Bot?(Y/N)', reply_markup=yes_no)
@@ -224,7 +225,8 @@ async def tor_keys(message: types.Message):
     await message.answer('TOR module', reply_markup=keyboard_tor)
 
 async def main_page(message: types.Message):
-    await message.answer('main page', reply_markup=keyboard_main)
+    if message.from_user.id == admin_id:
+        await message.answer('main page', reply_markup=keyboard_main)
 
 async def check_message(message: types.Message):
     try:
