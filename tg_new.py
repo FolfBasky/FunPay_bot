@@ -702,7 +702,7 @@ async def calc(call: types.CallbackQuery):
     await call.message.answer(f'Account {call.data.split("_")[0]} was deleted!')
 
 
-vk_account_data = [x['login']+'_seting_vk_acc' for x in select_all_vk_profiles()]
+#vk_account_data = [x['login']+'_seting_vk_acc' for x in select_all_vk_profiles()]
 
 async def set_vk_profile(message:types.Message):
     global vk_account_data
