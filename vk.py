@@ -34,7 +34,6 @@ def captcha_solved():
     return (job.get_captcha_text())
 
 def generate_random_string(lenght):
-    vowels = consonants = []
     vowels = [x for x in list(string.ascii_lowercase) if x in 'aeiouy']
     consonants = [x for x in list(string.ascii_lowercase) if x not in 'aeiouy']
 

@@ -86,8 +86,9 @@ def logging_():
         print('Fail use proxy')
         return 'Fail use proxy'
     if response.status_code != 200 or 'Войти' in response.text: 
-        print('Fail first auth')
-        return 'Fail first auth'
+        error_msg = BeautifulSoup(response.text,'lxml').find('ul',class_='form-messages text-danger').text.strip()
+        print(error_msg)
+        return error_msg
     
 
     headers1 = {
@@ -580,20 +581,24 @@ def register_account(nickname, email, password):
         'name':nickname,
         'email':email,
         'password':password,
-        'g-recaptcha-response':recaptcha(site_key, url=url),
         'agreement': 'on',
-        'captchaHidden': '1'
+        'g-recaptcha-response':recaptcha(site_key, url=url),
+        #'captchaHidden': '1'
         }
     
     response = session.post('https://funpay.com/account/registerAction', data=data, headers=headers)
     try:
         if response.json()['errors'] == []: return True
+        else: 
+            print(response.json()['errors'])
+            return False
     except Exception as e:
         print(e)
     
 
 def activate_account(url):
     'after register account, you get a link on your email'
+    if url == '': return
     session.get(url)
 
 def pass_the_test(phone) -> bool:
@@ -657,17 +662,22 @@ def pass_the_test_code(code):
     else: return False
 
 def main():
-    """from tg_new import generate_random_string
-    if not register_account(nickname='JohnWolk1223',email=, password=(password:=generate_random_string(4))):
+
+
+    from tg_new import generate_random_string
+    if not register_account(nickname=generate_random_string(3),email=(email:='farafara21212@gmail.com'), password=(password:=generate_random_string(4))):
         print('Fail')
-    print(password)
+        return
+    print(f'{password=}')
     url = input('Enter url: ')
-    activate_account(url)"""
-    #from sql import add_user_profile
-    #add_user_profile(1,'johnwolk338@gmail.com','Vecolozy809','89317095287')
-    '''change_account('loise.joi@yandex.ru')
-    print(pass_the_test('89317095287'))
-    print(pass_the_test_code(input('Enter code: ')))'''
+    activate_account(url)
+    phone = '89311182608'
+
+    from sql import add_user_profile
+    add_user_profile(1,email,password,phone)
+    change_account(email)
+    print(pass_the_test(phone))
+    print(pass_the_test_code(input('Enter code: ')))
     '''change_account()
     print(logging_())
     print(logout())'''
@@ -676,6 +686,9 @@ def main():
     #print(check_messages(collect_chats()[0][2]))
     #print(check_sale('#GYPLRXRJ'))
     ...
+
+
+
 if __name__ == '__main__':
     #validate_ip()
     main()
