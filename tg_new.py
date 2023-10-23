@@ -701,12 +701,17 @@ async def calc(call: types.CallbackQuery):
     delete_vk_account(login=call.data.split("_")[0])
     await call.message.answer(f'Account {call.data.split("_")[0]} was deleted!')
 
+
+vk_account_data = [x['login']+'_seting_vk_acc' for x in select_all_vk_profiles()]
+
 async def set_vk_profile(message:types.Message):
+    global vk_account_data
+    vk_account_data = [x['login']+'_seting_vk_acc' for x in select_all_vk_profiles()]
     markup = types.InlineKeyboardMarkup()
     markup.add(*[types.InlineKeyboardButton(text=x['login'], callback_data=x['login']+'_seting_vk_acc') for x in select_all_vk_profiles()])
     await message.answer('Select account...', reply_markup=markup)
 
-@dp.callback_query_handler(text=[x['login']+'_seting_vk_acc' for x in select_all_vk_profiles()])
+@dp.callback_query_handler(text=vk_account_data)
 async def calc(call: types.CallbackQuery):
     set_active_status_vk_accounts()
     choice_active_status_vk_account(login=call.data.split("_")[0])
