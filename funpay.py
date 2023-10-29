@@ -22,7 +22,7 @@ def recaptcha(site_key, url):
         job = client.createTask(task)
     except Exception as e:
         print(e)
-        recaptcha(site_key, url)
+        return recaptcha(site_key, url)
     job.join()
     print('captcha_solved')
     return job.get_solution_response()
