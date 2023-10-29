@@ -494,7 +494,7 @@ def refund_order(tag):
         'id':tag.replace('#','')
     }
     response = session.post('https://funpay.com/orders/refund', data=data, headers=headers)
-    return response.json()['msg']
+    return response.json()
 
 def cancel_balance_operation(id):
     headers = {
