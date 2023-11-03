@@ -138,7 +138,7 @@ def main_photo(personally_token, link, captcha_key='',captcha_sid=''):
     params={
         'access_token':personally_token,
         'owner_id': -link,
-        'v':version
+        'v':version,
         'captcha_sid':captcha_sid,
         'captcha_key':captcha_key
     }
