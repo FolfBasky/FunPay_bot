@@ -168,6 +168,47 @@ def main_photo(personally_token, link, captcha_key='',captcha_sid=''):
     except:
         return True
 
+def edit_group_info(personally_token, link, captcha_key='',captcha_sid=''):
+    response = requests.get('https://api.vk.com/method/groups.edit?',
+        params = {
+        'access_token': personally_token,
+        'group_id' : link,
+        'title' : 'Купить группу паблик ВК VK Вконтакте',#name, 
+        'description':'Здесь вы можете купить любую группу ВК по низкой цене!',# '','
+        #'screen_name': name + str(random.randint(0,1000)),
+        'website':'',
+        'access' : 0,
+        'subject': 3,
+        'wall': 2,
+        'topics': 0,
+        'photos': 0,
+        'video': 0,
+        'audio': 0,
+        'links': 0,
+        'events': 0,
+        'places': 0,
+        'contacts': 0,
+        'docs': 0,
+        'messages': 1,
+        'market': 0, 
+        'phone':'',
+        'email':'',
+        'v': version,
+        'captcha_sid':captcha_sid,
+        'captcha_key':captcha_key
+        }
+        )
+    try:
+        if response.json()['error']['error_code'] == 14:
+            img_data = requests.get(response.json()['error']['captcha_img']).content
+            with open('captcha_ms.jpeg', 'wb') as handler:
+                handler.write(img_data)
+            captcha_key = captcha_solved()
+            captcha_sid = response.json()['error']['captcha_sid']
+            edit_group_info(personally_token, link, captcha_key=captcha_key, captcha_sid=captcha_sid)
+    except:   
+        return True
+
 def back_photo(personally_token,link, captcha_key='',captcha_sid=''):
     files = {'photo': open('test1.jpg', 'rb')}
     response = requests.get('https://api.vk.com/method/photos.getOwnerCoverPhotoUploadServer?', 
@@ -206,95 +247,60 @@ def back_photo(personally_token,link, captcha_key='',captcha_sid=''):
     except:
         return True
 
-def lock_all(links):
-    personally_token, user_id = get_data()
+def delete_photos_from_group(personally_token, link):
     ids = []
-    captcha_sid = captcha_key = None
-    for link in links:
-        name = random.choice(names)
-        response = requests.get('https://api.vk.com/method/photos.getAll?',
+    response = requests.get('https://api.vk.com/method/photos.getAll?',
+        params = {  
+            'access_token':personally_token,
+            'owner_id':-int(link),
+            'v':version
+        }   
+        ).json()['response']
+    for i in range(response['count']):
+        ids.append(response['items'][i]['id'])
+
+    for i in ids:
+        response = requests.get('https://api.vk.com/method/photos.delete?',
             params = {  
                 'access_token':personally_token,
                 'owner_id':-int(link),
+                'photo_id':i,
                 'v':version
             }   
-            ).json()['response']
-        for i in range(response['count']):
-            ids.append(response['items'][i]['id'])
+            )
+        if response.json()['response'] != 1: return "Was failed!"
 
-        for i in ids:
-            response = requests.get('https://api.vk.com/method/photos.delete?',
-                params = {  
-                    'access_token':personally_token,
-                    'owner_id':-int(link),
-                    'photo_id':i,
-                    'v':version
-                }   
-                )
-            if response.json()['response'] != 1: return "Was failed!"
-        response = requests.get('https://api.vk.com/method/groups.edit?',
+def delete_posts_from_group(personally_token, link):
+    data = []
+    while True:
+        response = requests.get('https://api.vk.com/method/wall.get?',
             params = {
             'access_token': personally_token,
-            'group_id' : link,
-            'title' : 'Купить группу паблик ВК VK Вконтакте',#name, 
-            'description':'Здесь вы можете купить любую группу ВК по низкой цене!',# '','
-            #'screen_name': name + str(random.randint(0,1000)),
-            'website':'',
-            'access' : 0,
-            'subject': 3,
-            'wall': 2,
-            'topics': 0,
-            'photos': 0,
-            'video': 0,
-            'audio': 0,
-            'links': 0,
-            'events': 0,
-            'places': 0,
-            'contacts': 0,
-            'docs': 0,
-            'messages': 1,
-            'market': 0, 
-            'phone':'',
-            'email':'',
+            'count':100,
+            'owner_id':-link,
+            'domain' : link,
             'v': version,
-            'captcha_sid':captcha_sid,
-            'captcha_key':captcha_key
             }
-            )
-        try:
-            if response.json()['error']['error_code'] == 14:
-                    img_data = requests.get(response.json()['error']['captcha_img']).content
-                    with open('captcha_ms.jpeg', 'wb') as handler:
-                        handler.write(img_data)
-                    captcha_key = captcha_solved()
-                    captcha_sid = response.json()['error']['captcha_sid']
-                    c -= 1
-        except:   
-            data = []
-            while True:
-                response = requests.get('https://api.vk.com/method/wall.get?',
-                    params = {
-                    'access_token': personally_token,
-                    'count':100,
-                    'owner_id':-link,
-                    'domain' : link,
-                    'v': version,
-                    }
-                    ).json()['response']
-                for i in range(response['count']):
-                    if i == 100: break
-                    else: data.append(response['items'][i]['id'])
-                if response['count'] <= len(data): break
-            for i in data:
-                response = requests.get('https://api.vk.com/method/wall.delete?',
-                    params = {
-                    'access_token': personally_token,
-                    'owner_id':-link,
-                    'post_id' : i,
-                    'v': version
-                    }
-                    )
-            
+            ).json()['response']
+        for i in range(response['count']):
+            if i == 100: break
+            else: data.append(response['items'][i]['id'])
+        if response['count'] <= len(data): break
+    for i in data:
+        response = requests.get('https://api.vk.com/method/wall.delete?',
+            params = {
+            'access_token': personally_token,
+            'owner_id':-link,
+            'post_id' : i,
+            'v': version
+            }
+        )
+
+def lock_all(links):
+    personally_token, user_id = get_data()
+    for link in links:
+        delete_photos_from_group(personally_token, link) 
+        delete_posts_from_group(personally_token, link)
         create_photos()
         if not main_photo(personally_token, link) or not back_photo(personally_token, link): 
             return 'Groups photo error'
