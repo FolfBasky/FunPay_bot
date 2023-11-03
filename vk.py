@@ -297,7 +297,7 @@ def delete_posts_from_group(personally_token, link):
         )
 
 def lock_all(links):
-    personally_token, user_id = get_data()
+    personally_token, _ = get_data()
     for link in links:
         edit_group_info(personally_token,link)
         delete_photos_from_group(personally_token, link) 
