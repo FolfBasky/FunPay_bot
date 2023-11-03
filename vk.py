@@ -210,9 +210,8 @@ def lock_all(links):
     personally_token, user_id = get_data()
     ids = []
     captcha_sid = captcha_key = None
-    while len(links) != 0:
+    for link in links:
         name = random.choice(names)
-        link = links[0]
         response = requests.get('https://api.vk.com/method/photos.getAll?',
             params = {  
                 'access_token':personally_token,
@@ -296,12 +295,11 @@ def lock_all(links):
                     }
                     )
             
-            create_photos()
-            if not main_photo(personally_token, link) or not back_photo(personally_token, link): 
-                return 'Groups photo error'
-            links.pop(0)
-            main_delete_messages()
-            return 'All done!'   
+        create_photos()
+        if not main_photo(personally_token, link) or not back_photo(personally_token, link): 
+            return 'Groups photo error'
+        main_delete_messages()
+        return 'All done!'   
 
 def create_groups(captcha_sid = None, captcha_key = None):
     personally_token, user_id = get_data()
