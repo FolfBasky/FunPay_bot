@@ -97,8 +97,11 @@ def groups() -> dict:
     return groups
 
 def create_photos():
-    colors = ['white','red','blue','yellow','gray','orange','green','pink','brown','purple' ,'gold', 'olive', 'magenta', 'cyan'] 
-    #colors = ['black']
+    variant = 1 # 0 - colourfull, 1 - black
+    if variant == 0:
+        colors = ['white','red','blue','yellow','gray','orange','green','pink','brown','purple' ,'gold', 'olive', 'magenta', 'cyan'] 
+    elif variant == 1: 
+        colors = ['black']
     i = random.choice(colors)
     colors.pop(colors.index(i))
     img = Image.new('RGB', (1000, 1000), i)
@@ -161,8 +164,8 @@ def lock_all(links):
             params = {
             'access_token': personally_token,
             'group_id' : link,
-            'title' : name, #f'Группа №{c}', #'Купить группу паблик ВК VK Вконтакте',
-            'description': '',#'Здесь вы можете купить любую группу ВК по низкой цене!',
+            'title' : f'Группа №{c}', #'Купить группу паблик ВК VK Вконтакте',#name, 
+            'description':'Здесь вы можете купить любую группу ВК по низкой цене!',# '','
             #'screen_name': name + str(random.randint(0,1000)),
             'website':'',
             'access' : 0,
