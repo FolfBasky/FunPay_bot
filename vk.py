@@ -100,10 +100,11 @@ def create_photos():
     variant = 1 # 0 - colourfull, 1 - black
     if variant == 0:
         colors = ['white','red','blue','yellow','gray','orange','green','pink','brown','purple' ,'gold', 'olive', 'magenta', 'cyan'] 
+        i = random.choice(colors)
+        colors.pop(colors.index(i))
     elif variant == 1: 
         colors = ['black']
-    i = random.choice(colors)
-    colors.pop(colors.index(i))
+        i = colors[0]
     img = Image.new('RGB', (1000, 1000), i)
     img.save('test.jpg')
     
