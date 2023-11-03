@@ -132,13 +132,85 @@ def create_photos():
             idraw.text((0+(len(i)/1.5)*x, 0+1*y),font = font, text = i,fill= color,align='center',  stroke_width=2)
     img.save('test1.jpg')
 
+def main_photo(personally_token, link, captcha_key='',captcha_sid=''):
+    files = {'photo': open('test.jpg', 'rb')}
+    response = requests.get('https://api.vk.com/method/photos.getOwnerPhotoUploadServer?', 
+    params={
+        'access_token':personally_token,
+        'owner_id': -link,
+        'v':version
+    }
+    )
+    url = response.json()['response']['upload_url']
+    response = requests.post(url, files = files)
+    photo = response.json()['photo']
+    server = response.json()['server']
+    hash = response.json()['hash']
+    response = requests.get('https://api.vk.com/method/photos.saveOwnerPhoto?', 
+        params={
+            'access_token':personally_token,
+            'server': server,
+            'hash': hash,
+            'photo': photo,
+            'v':version,
+            'captcha_sid':captcha_sid,
+            'captcha_key':captcha_key
+        }
+        )
+    try:
+        if response.json()['error']['error_code'] == 14:
+            img_data = requests.get(response.json()['error']['captcha_img']).content
+            with open('captcha_ms.jpeg', 'wb') as handler:
+                handler.write(img_data)
+            captcha_key = captcha_solved()
+            captcha_sid = response.json()['error']['captcha_sid']
+            main_photo(personally_token, link, captcha_key=captcha_key,captcha_sid=captcha_sid)
+    except:
+        return True
+
+def back_photo(personally_token,link, captcha_key='',captcha_sid=''):
+    files = {'photo': open('test1.jpg', 'rb')}
+    response = requests.get('https://api.vk.com/method/photos.getOwnerCoverPhotoUploadServer?', 
+    params={
+    'access_token':personally_token,
+    'group_id': link,
+    'crop_x':0,
+    'crop_y':0,
+    'crop_x2':1590,
+    'crop_y2':530,
+    'v':version
+    }
+    )
+    url = response.json()['response']['upload_url']
+    response = requests.post(url, files = files)
+    photo = response.json()['photo']
+    hash = response.json()['hash']
+    response = requests.get('https://api.vk.com/method/photos.saveOwnerCoverPhoto?', 
+        params={
+        'access_token':personally_token,
+        'hash': hash,
+        'photo': photo,
+        'v':version,
+        'captcha_sid':captcha_sid,
+        'captcha_key':captcha_key
+        }
+        )
+    try:
+        if response.json()['error']['error_code'] == 14:
+            img_data = requests.get(response.json()['error']['captcha_img']).content
+            with open('captcha_ms.jpeg', 'wb') as handler:
+                handler.write(img_data)
+            captcha_key = captcha_solved()
+            captcha_sid = response.json()['error']['captcha_sid']
+            back_photo(personally_token, link, captcha_key=captcha_key,captcha_sid=captcha_sid)   
+    except:
+        return True
+
 def lock_all(links):
     personally_token, user_id = get_data()
     ids = []
-    captcha_sid = captcha_key = captcha_sid1 = captcha_key1 = None
-    c = 0
+    captcha_sid = captcha_key = None
     while len(links) != 0:
-        c += 1
         name = random.choice(names)
         link = links[0]
         response = requests.get('https://api.vk.com/method/photos.getAll?',
@@ -186,8 +258,8 @@ def lock_all(links):
             'phone':'',
             'email':'',
             'v': version,
-            'captcha_sid':captcha_sid1,
-            'captcha_key':captcha_key1
+            'captcha_sid':captcha_sid,
+            'captcha_key':captcha_key
             }
             )
         try:
@@ -195,8 +267,8 @@ def lock_all(links):
                     img_data = requests.get(response.json()['error']['captcha_img']).content
                     with open('captcha_ms.jpeg', 'wb') as handler:
                         handler.write(img_data)
-                    captcha_key1 = captcha_solved()
-                    captcha_sid1 = response.json()['error']['captcha_sid']
+                    captcha_key = captcha_solved()
+                    captcha_sid = response.json()['error']['captcha_sid']
                     c -= 1
         except:   
             data = []
@@ -225,79 +297,11 @@ def lock_all(links):
                     )
             
             create_photos()
-
-            files = {'photo': open('test.jpg', 'rb')}
-            response = requests.get('https://api.vk.com/method/photos.getOwnerPhotoUploadServer?', 
-            params={
-                'access_token':personally_token,
-                'owner_id': -link,
-                'v':version
-            }
-            )
-            url = response.json()['response']['upload_url']
-            response = requests.post(url, files = files)
-            photo = response.json()['photo']
-            server = response.json()['server']
-            hash = response.json()['hash']
-            response = requests.get('https://api.vk.com/method/photos.saveOwnerPhoto?', 
-                params={
-                    'access_token':personally_token,
-                    'server': server,
-                    'hash': hash,
-                    'photo': photo,
-                    'v':version,
-                    'captcha_sid':captcha_sid,
-                    'captcha_key':captcha_key
-                }
-                )
-            try:
-                if response.json()['error']['error_code'] == 14:
-                    img_data = requests.get(response.json()['error']['captcha_img']).content
-                    with open('captcha_ms.jpeg', 'wb') as handler:
-                        handler.write(img_data)
-                    captcha_key = captcha_solved()
-                    captcha_sid = response.json()['error']['captcha_sid']
-                    c -= 1
-            except:
-                files = {'photo': open('test1.jpg', 'rb')}
-                response = requests.get('https://api.vk.com/method/photos.getOwnerCoverPhotoUploadServer?', 
-                params={
-                'access_token':personally_token,
-                'group_id': link,
-                'crop_x':0,
-                'crop_y':0,
-                'crop_x2':1590,
-                'crop_y2':530,
-                'v':version
-                }
-                )
-                url = response.json()['response']['upload_url']
-                response = requests.post(url, files = files)
-                photo = response.json()['photo']
-                hash = response.json()['hash']
-                response = requests.get('https://api.vk.com/method/photos.saveOwnerCoverPhoto?', 
-                    params={
-                    'access_token':personally_token,
-                    'hash': hash,
-                    'photo': photo,
-                    'v':version,
-                    'captcha_sid':captcha_sid,
-                    'captcha_key':captcha_key
-                    }
-                    )
-                try:
-                    if response.json()['error']['error_code'] == 14:
-                        img_data = requests.get(response.json()['error']['captcha_img']).content
-                        with open('captcha_ms.jpeg', 'wb') as handler:
-                            handler.write(img_data)
-                        captcha_key = captcha_solved()
-                        captcha_sid = response.json()['error']['captcha_sid']
-                        c -= 1
-                except:
-                    links.pop(0)
-    main_delete_messages()
-    #set_group_links()
-    return 'All done!'   
+            if not main_photo(personally_token, link) or not back_photo(personally_token, link): 
+                return 'Groups photo error'
+            links.pop(0)
+            main_delete_messages()
+            return 'All done!'   
 
 def create_groups(captcha_sid = None, captcha_key = None):
     personally_token, user_id = get_data()
