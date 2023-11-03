@@ -164,7 +164,7 @@ def main_photo(personally_token, link, captcha_key='',captcha_sid=''):
                 handler.write(img_data)
             captcha_key = captcha_solved()
             captcha_sid = response.json()['error']['captcha_sid']
-            main_photo(personally_token, link, captcha_key=captcha_key,captcha_sid=captcha_sid)
+            return main_photo(personally_token, link, captcha_key=captcha_key,captcha_sid=captcha_sid)
     except:
         return True
 
@@ -243,7 +243,7 @@ def back_photo(personally_token,link, captcha_key='',captcha_sid=''):
                 handler.write(img_data)
             captcha_key = captcha_solved()
             captcha_sid = response.json()['error']['captcha_sid']
-            back_photo(personally_token, link, captcha_key=captcha_key,captcha_sid=captcha_sid)   
+            return back_photo(personally_token, link, captcha_key=captcha_key,captcha_sid=captcha_sid)   
     except:
         return True
 
