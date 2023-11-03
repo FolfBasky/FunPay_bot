@@ -139,6 +139,8 @@ def main_photo(personally_token, link, captcha_key='',captcha_sid=''):
         'access_token':personally_token,
         'owner_id': -link,
         'v':version
+        'captcha_sid':captcha_sid,
+        'captcha_key':captcha_key
     }
     )
     url = response.json()['response']['upload_url']
@@ -219,7 +221,9 @@ def back_photo(personally_token,link, captcha_key='',captcha_sid=''):
     'crop_y':0,
     'crop_x2':1590,
     'crop_y2':530,
-    'v':version
+    'v':version,
+    'captcha_sid':captcha_sid,
+    'captcha_key':captcha_key
     }
     )
     url = response.json()['response']['upload_url']
