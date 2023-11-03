@@ -304,8 +304,8 @@ def lock_all(links):
         create_photos()
         if not main_photo(personally_token, link) or not back_photo(personally_token, link): 
             return 'Groups photo error'
-        main_delete_messages()
-        return 'All done!'   
+    main_delete_messages()
+    return 'All done!'   
 
 def create_groups(captcha_sid = None, captcha_key = None):
     personally_token, user_id = get_data()
