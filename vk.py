@@ -295,7 +295,7 @@ def lock_all(links):
                 except:
                     links.pop(0)
     main_delete_messages()
-    set_group_links()
+    #set_group_links()
     return 'All done!'   
 
 def create_groups(captcha_sid = None, captcha_key = None):
