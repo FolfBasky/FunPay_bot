@@ -347,7 +347,7 @@ async def info(message:types.Message):
         for acc in accs:
             login = ('#'*5) + str(acc['login']) + ('#'*5)
             set_active_status_vk_accounts()
-            choice_active_status_vk_account(login)
+            choice_active_status_vk_account(acc['login'])
             data = groups()
             summa = round(sum(list(data.values()))/10*kef)
             await message.answer(f'{login}\n{len(data)} groups find (id:subscribers): {data}\nAbout {summa} rub')
