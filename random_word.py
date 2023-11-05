@@ -53,7 +53,7 @@ class Words:
             path = f'photos/{self.word}.jpg'
             photo = Image.open(path)
             new_photo = photo.resize((width, lenght))
-            new_photo.save(f'photos/{self.word}{postfix}.jpg')
+            new_photo.save(f'photos/image{postfix}.jpg')
             return True
         except Exception as e:
             print(e)

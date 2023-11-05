@@ -133,7 +133,7 @@ def create_photos():
     img.save('test1.jpg')
 
 def main_photo(personally_token, link, captcha_key='',captcha_sid=''):
-    files = {'photo': open(f'photos/{ex.word}_avatar.jpg', 'rb')}
+    files = {'photo': open('photos/image_avatar.jpg', 'rb')}
     response = requests.get('https://api.vk.com/method/photos.getOwnerPhotoUploadServer?', 
     params={
         'access_token':personally_token,
@@ -212,7 +212,7 @@ def edit_group_info(personally_token, link, captcha_key='',captcha_sid=''):
         return True
 
 def back_photo(personally_token,link, captcha_key='',captcha_sid=''):
-    files = {'photo': open(f'photos/{ex.word}_poster.jpg', 'rb')}
+    files = {'photo': open('photos/image_poster.jpg', 'rb')}
     response = requests.get('https://api.vk.com/method/photos.getOwnerCoverPhotoUploadServer?', 
     params={
     'access_token':personally_token,
