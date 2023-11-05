@@ -345,7 +345,7 @@ async def info(message:types.Message):
         accs = select_all_vk_profiles()
         all_suma = 0
         for acc in accs:
-            login = ('#'*5) + str(acc['login']) + ('#'*5)
+            login = ('_'*7) + str(acc['login']) + ('_'*7)
             set_active_status_vk_accounts()
             choice_active_status_vk_account(acc['login'])
             data = groups()
