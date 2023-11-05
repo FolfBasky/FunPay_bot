@@ -41,7 +41,7 @@ class Words:
         api_url = 'https://api.api-ninjas.com/v1/randomimage?category={}'.format(category)
         response = requests.get(api_url, headers={'X-Api-Key': self.__api_key, 'Accept': 'image/jpg'}, stream=True)
         if response.status_code == requests.codes.ok:
-            with open(f'photos/{self.word}.jpg', 'wb') as out_file:
+            with open(f'photos/image.jpg', 'wb') as out_file:
                 shutil.copyfileobj(response.raw, out_file)
             return True
         else:
@@ -50,7 +50,7 @@ class Words:
     
     def resize(self, width, lenght, postfix = ''):
         try:
-            path = f'photos/{self.word}.jpg'
+            path = f'photos/image.jpg'
             photo = Image.open(path)
             new_photo = photo.resize((width, lenght))
             new_photo.save(f'photos/image{postfix}.jpg')
