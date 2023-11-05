@@ -324,7 +324,16 @@ async def auto(message: types.Message):
         await asyncio.sleep(20)
 
 async def create_slotes(message: types.Message):
-    await message.answer(create_lot())
+    try:
+        accs = select_all_vk_profiles()
+        for acc in accs:
+            personally_token = acc['access_token']
+            set_active_status_vk_accounts()
+            choice_active_status_vk_account(acc['login'])
+            groups_data = groups()
+            await message.answer(create_lot(personally_token, groups_data))
+    except Exception as e:
+        await message.answer(e)
 
 async def delete_slotes(message: types.Message):
     await message.answer(delete_slots())
@@ -341,7 +350,7 @@ async def off_pc(message:types.Message):
     os.system('shutdown /f')
 
 async def info(message:types.Message):
-    #try:
+    try:
         accs = select_all_vk_profiles()
         all_suma = 0
         for acc in accs:
@@ -353,8 +362,8 @@ async def info(message:types.Message):
             await message.answer(f'{login}\n{len(data)} groups find (id:subscribers): {data}\nAbout {summa} rub')
             all_suma += summa
         await message.answer(f'All is {all_suma} rub') 
-    #except Exception as e:
-    #    await message.answer(e)
+    except Exception as e:
+        await message.answer(e)
 
 
 

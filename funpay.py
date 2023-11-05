@@ -230,13 +230,11 @@ def message_answer_r(url, text):
     if response.json()['response']['error'] == None: return 'Message was sended'
     else: return response.json()['response']
  
-def create_lot(deleted = "", offer_id:str = '0'):
-    personally_token, _ = vk.get_data()
+def create_lot(personally_token,groups_data,deleted = "", offer_id:str = '0'):
     ds_list = [['🎁ГРУППА VK','ПОДПИСЧИКОВ🎁 ✅ПОД ВАШУ ТЕМАТИКУ✅БЕЗ БАНА✅ПЕРЕДАЧА ПРАВ ВЛАДЕЛЬЦА✅🎁']]
     #['🔥Живой паблик','подписчиков 🔥СООБЩЕСТВО ДЛЯ СТАРТА🔥БЕЗ БЛОКИРОВКИ 🔥'],
     #['Вк группа под смену тематики/ высшее качество 🔥', 'подписчиков']]
     describe = random.choice(ds_list)
-    groups_data = vk.groups()
     with open('data.py','r') as e:
         kef = e.readlines()[0].strip().split()[2]
         kef = float(kef)
