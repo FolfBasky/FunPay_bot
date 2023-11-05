@@ -341,8 +341,20 @@ async def off_pc(message:types.Message):
     os.system('shutdown /f')
 
 async def info(message:types.Message):
-    res = groups()
-    await message.answer(f'{len(res)} groups find (id:subscribers): {res}\nAbout {round(sum(list(res.values()))/10*kef)} rub')
+    accs = select_all_vk_profiles()
+    all_suma = 0
+    for acc in accs:
+        login = acc['login']
+        await message.answer(login)
+        set_active_status_vk_accounts()
+        choice_active_status_vk_account(login)
+        data = groups()
+        summa = round(sum(list(data.values()))/10*kef)
+        await message.answer(f'{len(data)} groups find (id:subscribers): {data}\nAbout {summa} rub')
+        all_suma += summa
+    await message.answer(f'All is {all_suma} rub') 
+
+
 
 async def check_sales(message: types.Message):
     for x in check_orders_or_sales(sales=True):
