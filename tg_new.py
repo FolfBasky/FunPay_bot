@@ -63,10 +63,13 @@ async def cmd(message: types.Message, state: FSMContext):
     await state.finish()
 
 async def clear_groups(message: types.Message):
-    group = [x for x in groups().keys()]  
-    a = lock_all(group)
-    if a != None:
-        await message.answer(a)
+    accs = select_all_vk_profiles()
+    for acc in accs:
+        set_active_status_vk_accounts()
+        choice_active_status_vk_account(acc['login'])
+        group = [x for x in groups().keys()]  
+        response = lock_all(group)
+        await message.answer(f'On the account {acc["login"]}: {response.lower()}')
 
 class Start_states(StatesGroup):
     choice = State()
