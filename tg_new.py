@@ -341,17 +341,20 @@ async def off_pc(message:types.Message):
     os.system('shutdown /f')
 
 async def info(message:types.Message):
-    accs = select_all_vk_profiles()
-    all_suma = 0
-    for acc in accs:
-        login = acc['login']
-        set_active_status_vk_accounts()
-        choice_active_status_vk_account(login)
-        data = groups()
-        summa = round(sum(list(data.values()))/10*kef)
-        await message.answer(f'{login}:\n{len(data)} groups find (id:subscribers): {data}\nAbout {summa} rub')
-        all_suma += summa
-    await message.answer(f'All is {all_suma} rub') 
+    try:
+        accs = select_all_vk_profiles()
+        all_suma = 0
+        for acc in accs:
+            login = acc['login']
+            set_active_status_vk_accounts()
+            choice_active_status_vk_account(login)
+            data = groups()
+            summa = round(sum(list(data.values()))/10*kef)
+            await message.answer(f'{login}:\n{len(data)} groups find (id:subscribers): {data}\nAbout {summa} rub')
+            all_suma += summa
+        await message.answer(f'All is {all_suma} rub') 
+    except Exception as e:
+        await message.answer(e)
 
 
 
