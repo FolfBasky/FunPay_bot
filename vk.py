@@ -133,7 +133,7 @@ def create_photos():
     img.save('test1.jpg')
 
 def main_photo(personally_token, link, captcha_key='',captcha_sid=''):
-    files = {'photo': open('test.jpg', 'rb')}
+    files = {'photo': open(f'photos/{ex.word}_avatar.jpg', 'rb')}
     response = requests.get('https://api.vk.com/method/photos.getOwnerPhotoUploadServer?', 
     params={
         'access_token':personally_token,
@@ -175,8 +175,8 @@ def edit_group_info(personally_token, link, captcha_key='',captcha_sid=''):
         params = {
         'access_token': personally_token,
         'group_id' : link,
-        'title' : 'Купить группу паблик ВК VK Вконтакте',#name, 
-        'description':'Здесь вы можете купить любую группу ВК по низкой цене!',# '','
+        'title' : ex.word,
+        'description': '',
         #'screen_name': name + str(random.randint(0,1000)),
         'website':'',
         'access' : 0,
@@ -212,7 +212,7 @@ def edit_group_info(personally_token, link, captcha_key='',captcha_sid=''):
         return True
 
 def back_photo(personally_token,link, captcha_key='',captcha_sid=''):
-    files = {'photo': open('test1.jpg', 'rb')}
+    files = {'photo': open(f'photos/{ex.word}_poster.jpg', 'rb')}
     response = requests.get('https://api.vk.com/method/photos.getOwnerCoverPhotoUploadServer?', 
     params={
     'access_token':personally_token,
@@ -301,12 +301,17 @@ def delete_posts_from_group(personally_token, link):
         )
 
 def lock_all(links):
+    from random_word import Words
+    global ex
+    ex = Words()
+    if not ex.status: 
+        return 'Generate photos error'
     personally_token, _ = get_data()
     for link in links:
         edit_group_info(personally_token,link)
         delete_photos_from_group(personally_token, link) 
         delete_posts_from_group(personally_token, link)
-        create_photos()
+        #create_photos()
         if not main_photo(personally_token, link) or not back_photo(personally_token, link): 
             return 'Groups photo error'
     main_delete_messages()
