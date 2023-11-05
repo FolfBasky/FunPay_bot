@@ -331,7 +331,7 @@ async def create_slotes(message: types.Message):
             set_active_status_vk_accounts()
             choice_active_status_vk_account(acc['login'])
             groups_data = groups()
-            await message.answer(create_lot(personally_token, groups_data))
+            await message.answer(f'On the account {acc["login"]}: {create_lot(personally_token, groups_data).lower()}')
     except Exception as e:
         await message.answer(e)
 
