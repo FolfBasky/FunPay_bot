@@ -302,12 +302,13 @@ def delete_posts_from_group(personally_token, link):
 
 def lock_all(links):
     from random_word import Words
-    global ex
-    ex = Words()
-    if not ex.status: 
-        return 'Generate photos error'
+    
     personally_token, _ = get_data()
     for link in links:
+        global ex
+        ex = Words()
+        if not ex.status: 
+            return 'Generate photos error'
         edit_group_info(personally_token,link)
         delete_photos_from_group(personally_token, link) 
         delete_posts_from_group(personally_token, link)
