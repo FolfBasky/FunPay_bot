@@ -62,9 +62,9 @@ def get_admins_groups():
         )
     result = response.json()['response']['items']
     try:
-        #result = [174746452,215991768,218599370, 218819870, 218819887]
-        #for x in :
-        #    result.remove(x)
+        #result = 
+        for x in [174746452,215991768,218599370, 218819870, 218819887]:
+            result.remove(x)
         #result = 
         #result.remove(174746452)
         ...
