@@ -350,7 +350,7 @@ async def info(message:types.Message):
         choice_active_status_vk_account(login)
         data = groups()
         summa = round(sum(list(data.values()))/10*kef)
-        await message.answer(f'{login}: {len(data)} groups find (id:subscribers): {data}\nAbout {summa} rub')
+        await message.answer(f'{login}:\n{len(data)} groups find (id:subscribers): {data}\nAbout {summa} rub')
         all_suma += summa
     await message.answer(f'All is {all_suma} rub') 
 
