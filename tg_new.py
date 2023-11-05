@@ -345,7 +345,6 @@ async def info(message:types.Message):
     all_suma = 0
     for acc in accs:
         login = acc['login']
-        await message.answer()
         set_active_status_vk_accounts()
         choice_active_status_vk_account(login)
         data = groups()
