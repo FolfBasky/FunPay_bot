@@ -2,6 +2,7 @@ import requests
 import random
 import shutil
 from PIL import Image
+import os
 
 class Words:
     def __init__(self):
@@ -41,6 +42,7 @@ class Words:
         api_url = 'https://api.api-ninjas.com/v1/randomimage?category={}'.format(category)
         response = requests.get(api_url, headers={'X-Api-Key': self.__api_key, 'Accept': 'image/jpg'}, stream=True)
         if response.status_code == requests.codes.ok:
+            if not not os.path.isdir("photos"): os.mkdir('photos')
             with open(f'photos/image.jpg', 'wb') as out_file:
                 shutil.copyfileobj(response.raw, out_file)
             return True
