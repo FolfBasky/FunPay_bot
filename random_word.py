@@ -24,7 +24,7 @@ class Words:
     def status_checker(self):
         if self.resize_status_avatar and self.resize_status_poster and self.generate_picture_status:
             return True
-        else: False
+        else: return False
 
     def collect_words(self):
         words = []
