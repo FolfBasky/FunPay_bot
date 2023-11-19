@@ -311,10 +311,10 @@ def lock_all(links):
             return 'Generate photos error'
         edit_group_info(personally_token,link)
         delete_photos_from_group(personally_token, link) 
-        delete_posts_from_group(personally_token, link)
         #create_photos()
         if not main_photo(personally_token, link) or not back_photo(personally_token, link): 
             return 'Groups photo error'
+        delete_posts_from_group(personally_token, link)
     main_delete_messages()
     return 'All done!'   
 
