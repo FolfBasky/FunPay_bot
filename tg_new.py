@@ -72,8 +72,8 @@ class Clear_groups_states(StatesGroup):
 async def clear_group_menu(message: types.Message):
     global mode_clear_groups
     mode_clear_groups = Clear_groups_states()
-    keyboard = types.ReplyKeyboardMarkup()
-    keyboard.add('confirm')
+    keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    keyboard.add('/confirm')
 
     keyboard_inline = types.InlineKeyboardMarkup()
     button1 = types.InlineKeyboardButton(text="Locked groups", callback_data="mode1")
