@@ -76,23 +76,24 @@ async def clear_group_menu(message: types.Message):
     keyboard.add('/confirm')
 
     keyboard_inline = types.InlineKeyboardMarkup()
-    button1 = types.InlineKeyboardButton(text="Locked groups", callback_data="mode1")
-    button2 = types.InlineKeyboardButton(text="Free groups", callback_data="mode2")
-    keyboard_inline.add(button1,button2)
+    button1 = types.InlineKeyboardButton(text="Locked groups", callback_data="mode_1")
+    button2 = types.InlineKeyboardButton(text="Free groups", callback_data="mode_2")
+    keyboard_inline.add(button1)
+    keyboard_inline.add(button2)
 
     await message.answer('Select mode and press confirm.',reply_markup=keyboard)
     await message.answer('Modes:', reply_markup=keyboard_inline)
 
     await Clear_groups_states.select_mode.set()
 
-@dp.callback_query_handler(text = 'mode1')
+@dp.callback_query_handler(text='mode_1')
 async def process_callback_button1(callback_query: types.CallbackQuery):
     global mode_clear_groups
     mode_clear_groups.mode = 1
     await bot.answer_callback_query(callback_query.id)
     await bot.send_message(callback_query.from_user.id, 'Locked groups mode selected!')
 
-@dp.callback_query_handler(text = 'mode2')
+@dp.callback_query_handler(text='mode_2')
 async def process_callback_button1(callback_query: types.CallbackQuery):
     global mode_clear_groups
     mode_clear_groups.mode = 2
