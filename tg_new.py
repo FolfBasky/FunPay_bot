@@ -62,22 +62,67 @@ async def cmd(message: types.Message, state: FSMContext):
     await message.answer('Not correct answer!')
     await state.finish()
 
-async def clear_groups(message: types.Message):
-    accs = select_all_vk_profiles()
-    for acc in accs:
-        set_active_status_vk_accounts()
-        choice_active_status_vk_account(acc['login'])
-        group = [x for x in groups().keys()]  
-        response = lock_all(group)
-        await message.answer(f'On the account {acc["login"]}: {response.lower()}')
+
+
+
+class Clear_groups_states(StatesGroup):
+    select_mode = State()
+    mode = 1
+
+async def clear_group_menu(message: types.Message):
+    global mode_clear_groups
+    mode_clear_groups = Clear_groups_states()
+    keyboard = types.ReplyKeyboardMarkup()
+    keyboard.add('confirm')
+
+    keyboard_inline = types.InlineKeyboardMarkup()
+    button1 = types.InlineKeyboardButton(text="Locked groups", callback_data="mode1")
+    button2 = types.InlineKeyboardButton(text="Free groups", callback_data="mode2")
+    keyboard_inline.add(button1,button2)
+
+    await message.answer('Select mode and press confirm.',reply_markup=keyboard)
+    await message.answer('Modes:', reply_markup=keyboard_inline)
+
+    await Clear_groups_states.select_mode.set()
+
+@dp.callback_query_handler(func=lambda c: c.data == 'mode1')
+async def process_callback_button1(callback_query: types.CallbackQuery):
+    global mode_clear_groups
+    mode_clear_groups.mode = 1
+    await bot.answer_callback_query(callback_query.id)
+    await bot.send_message(callback_query.from_user.id, 'Locked groups mode selected!')
+
+@dp.callback_query_handler(func=lambda c: c.data == 'mode2')
+async def process_callback_button1(callback_query: types.CallbackQuery):
+    global mode_clear_groups
+    mode_clear_groups.mode = 2
+    await bot.answer_callback_query(callback_query.id)
+    await bot.send_message(callback_query.from_user.id, 'Free groups mode selected!')
+
+@dp.message_handler(commands='confirm' , state=Clear_groups_states.select_mode)
+async def clear_groups(message: types.Message, state: FSMContext):
+    global mode_clear_groups
+    try:
+        accs = select_all_vk_profiles()
+        for acc in accs:
+            set_active_status_vk_accounts()
+            choice_active_status_vk_account(acc['login'])
+            group = [x for x in groups().keys()]  
+            response = lock_all(group, lock_mode = mode_clear_groups.mode)
+            await message.answer(f'On the account {acc["login"]}: {response.lower()}')
+    except Exception as e:
+        await message.answer(e)
+    finally:
+        await state.finish()
+
+
+
 
 class Start_states(StatesGroup):
     choice = State()
 
 async def start(message: types.Message):
     if message.from_user.id == admin_id:
-        keyboard1= types.ReplyKeyboardMarkup(resize_keyboard=True)
-        keyboard1.add('Y','N')
         await message.answer(f'Hi, {message.from_user.full_name}! \nStart Bot?(Y/N)', reply_markup=yes_no)
         await Start_states.choice.set()
 
@@ -756,10 +801,10 @@ async def on_startup(dp):
 def message_handelers_registers(dp: Dispatcher):
     dp.register_message_handler(start, commands=["start","start_bot"])
     dp.register_message_handler(create_groupes, commands="create_groupes")
+    dp.register_message_handler(clear_group_menu, commands="clear_groups")
     dp.register_message_handler(check_message, commands="check_message")
     dp.register_message_handler(create_slotes, commands="create_slots")
     dp.register_message_handler(delete_slotes, commands="delete_slots")
-    dp.register_message_handler(clear_groups, commands="clear_groups")
     dp.register_message_handler(check_orders, commands="check_orders")
     dp.register_message_handler(send_message, commands="send_message")
     dp.register_message_handler(check_sales, commands="check_sales")

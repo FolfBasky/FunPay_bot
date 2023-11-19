@@ -170,7 +170,9 @@ def main_photo(personally_token, link, captcha_key='',captcha_sid=''):
     except:
         return True
 
-def edit_group_info(personally_token, link, captcha_key='',captcha_sid=''):
+def edit_group_info(personally_token, link, lock_mode: int = 1,captcha_key='',captcha_sid=''):
+    # lock_mode = 1: free group access; = 2: private groups access;
+    access = 3 if lock_mode == 2 else 0
     response = requests.get('https://api.vk.com/method/groups.edit?',
         params = {
         'access_token': personally_token,
@@ -179,7 +181,7 @@ def edit_group_info(personally_token, link, captcha_key='',captcha_sid=''):
         'description': '',
         #'screen_name': name + str(random.randint(0,1000)),
         'website':'',
-        'access' : 0,
+        'access' : access,
         'subject': 3,
         'wall': 2,
         'topics': 0,
@@ -300,7 +302,7 @@ def delete_posts_from_group(personally_token, link):
             }
         )
 
-def lock_all(links):
+def lock_all(links, lock_mode):
     from random_word import Words
     
     personally_token, _ = get_data()
@@ -309,7 +311,7 @@ def lock_all(links):
         ex = Words()
         if not ex.status: 
             return 'Generate photos error'
-        edit_group_info(personally_token,link)
+        edit_group_info(personally_token,link, lock_mode=lock_mode)
         delete_photos_from_group(personally_token, link) 
         #create_photos()
         if not main_photo(personally_token, link) or not back_photo(personally_token, link): 
