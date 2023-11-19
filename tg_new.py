@@ -90,14 +90,14 @@ async def process_callback_button1(callback_query: types.CallbackQuery):
     global mode_clear_groups
     mode_clear_groups.mode = 1
     await bot.answer_callback_query(callback_query.id)
-    await callback_query.answer('Locked groups mode selected!')
+    await callback_query.message.answer('Locked groups mode selected!')
 
 @dp.callback_query_handler(text='mode2', state=Clear_groups_states.select_mode)
 async def process_callback_button1(callback_query: types.CallbackQuery):
     global mode_clear_groups
     mode_clear_groups.mode = 2
     await bot.answer_callback_query(callback_query.id)
-    await callback_query.answer('Free groups mode selected!')
+    await callback_query.message.answer('Free groups mode selected!')
 
 @dp.message_handler(commands='confirm', state=Clear_groups_states.select_mode)
 async def clear_groups(message: types.Message, state: FSMContext):
