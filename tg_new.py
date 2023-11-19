@@ -103,7 +103,7 @@ async def process_callback_button1(callback_query: types.CallbackQuery):
 async def clear_groups(message: types.Message, state: FSMContext):
     global mode_clear_groups
     #try:
-    await message.answer('Start clearing... Mode: ' + str(mode_clear_groups.mode))
+    await message.answer('Start clearing... Mode: ' + str(mode_clear_groups.mode), reply_markup=keyboard_vk)
     accs = select_all_vk_profiles()
     for acc in accs:
         set_active_status_vk_accounts()
