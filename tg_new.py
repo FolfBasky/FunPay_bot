@@ -76,10 +76,9 @@ async def clear_group_menu(message: types.Message):
     keyboard.add('/confirm')
 
     keyboard_inline = types.InlineKeyboardMarkup()
-    button1 = types.InlineKeyboardButton(text="Locked groups", callback_data="mode_1")
-    button2 = types.InlineKeyboardButton(text="Free groups", callback_data="mode_2")
-    keyboard_inline.add(button1)
-    keyboard_inline.add(button2)
+    button1 = types.InlineKeyboardButton(text="Locked_groups", callback_data="mode_1")
+    button2 = types.InlineKeyboardButton(text="Free_groups", callback_data="mode_2")
+    keyboard_inline.add(button1,button2)
 
     await message.answer('Select mode and press confirm.',reply_markup=keyboard)
     await message.answer('Modes:', reply_markup=keyboard_inline)
@@ -104,7 +103,7 @@ async def process_callback_button1(callback_query: types.CallbackQuery):
 async def clear_groups(message: types.Message, state: FSMContext):
     global mode_clear_groups
     #try:
-    await message.answer('Start clearing... Mode: ' + mode_clear_groups.mode)
+    await message.answer('Start clearing... Mode: ' + str(mode_clear_groups.mode))
     accs = select_all_vk_profiles()
     for acc in accs:
         set_active_status_vk_accounts()
