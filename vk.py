@@ -179,7 +179,7 @@ def edit_group_info(personally_token, link, captcha_key='',captcha_sid=''):
         'description': '',
         #'screen_name': name + str(random.randint(0,1000)),
         'website':'',
-        'access' : 2,
+        'access' : 0,
         'subject': 3,
         'wall': 2,
         'topics': 0,
