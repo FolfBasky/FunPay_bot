@@ -73,7 +73,7 @@ async def clear_group_menu(message: types.Message):
     global mode_clear_groups
     mode_clear_groups = Clear_groups_states()
     keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    keyboard.add('/confirm')
+    keyboard.add('/confirm', '/back')
 
     keyboard_inline = types.InlineKeyboardMarkup()
     button1 = types.InlineKeyboardButton(text="Locked groups", callback_data="mode1")
@@ -117,7 +117,14 @@ async def clear_groups(message: types.Message, state: FSMContext):
     finally:
         await state.finish()
 
-
+@dp.message_handler(commands='confirm', state=Clear_groups_states.select_mode)
+async def clear_groups(message: types.Message, state: FSMContext):
+    try:
+        await message.answer('VK module', reply_markup=keyboard_vk)
+    except Exception as e:
+        await message.answer(e)
+    finally:
+        await state.finish()
 
 
 class Start_states(StatesGroup):
