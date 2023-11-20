@@ -117,7 +117,7 @@ async def clear_groups(message: types.Message, state: FSMContext):
     finally:
         await state.finish()
 
-@dp.message_handler(commands='confirm', state=Clear_groups_states.select_mode)
+@dp.message_handler(commands='back', state=Clear_groups_states.select_mode)
 async def clear_groups(message: types.Message, state: FSMContext):
     try:
         await message.answer('VK module', reply_markup=keyboard_vk)
