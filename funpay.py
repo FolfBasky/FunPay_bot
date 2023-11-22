@@ -646,7 +646,7 @@ def pass_the_test_code(code):
     try:
         data_n['mode'] = 'code'
         data_n['code'] = code
-        response = session.post(url:='https://funpay.com/account/phone')
+        response = session.get(url:='https://funpay.com/account/phone')
         soup = BeautifulSoup(response.text, 'lxml')
         site_key = soup.find_all('div', class_='g-recaptcha')[0]['data-sitekey']
         data_n['g-recaptcha-response'] = recaptcha(site_key, url=url)
@@ -657,7 +657,7 @@ def pass_the_test_code(code):
         del data_n, headers
     
     if response.json()['error']: return True
-    else: return False
+    else: return response.json()['error']
 
 def main():
 
