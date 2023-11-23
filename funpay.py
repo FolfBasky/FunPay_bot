@@ -7,7 +7,6 @@ import random
 from http.cookiejar import CookieJar
 import vk
 import time
-from sql import set_account_active, set_active_status_accounts
 
 data_st = {
     'csrf_token':'',
@@ -181,25 +180,25 @@ def check_messages(url):
     if response.text.find('Здесь пока ничего нет ¯\\_(ツ)_/¯') != -1:
         return 'Fail'
     soup = BeautifulSoup(response.text, 'lxml')
-
     all_message = []
-    for x in (soup.find_all('div', {'class':['message-text','alert alert-with-icon alert-info']})):
-        username = x.previousSibling.text
-        text = x.text
-        if text == '': text = x.contents[0]['href']
-        """image = session.get()
-        #if not os.path.isdir('photos'): os.mkdir('photos')
-        if not os.path.isdir(f'photos/{username}'): os.mkdir(f'photos/{username}')
-        with open(f'photos/{username}/{i}.jpg', 'wb') as file:
-            file.write(image.content)"""
-        if username == ' ': username = 'FunPay'
-        if username == '\n':
-            all_message.append(text.strip())
-        else:
+    messages = soup.find_all('div', class_='chat-message')
+    online = soup.find('div', class_='media-user-status').text
+    all_message.append(online)
+    for x in messages:
+        try:
+            username = x.contents[1::2][0].text.strip().split()[0]
+            date = x.contents[1::2][0].contents[-2].attrs['title']
+            text = x.contents[1::2][1].text.strip()
+            
+            all_message.append(f'___ {username} ({date}) ___')
+            all_message.append(text)
+        except:
+            pass
 
-            all_message.append(f"{username:_^26}\n{text.strip()}")
-    
     return all_message
+
+        
+
 
 def message_answer_r(url, text):
     text = text.replace('\n', ' ')
