@@ -287,7 +287,7 @@ async def main_page(message: types.Message):
         await message.answer('main page', reply_markup=keyboard_main)
 
 async def check_message(message: types.Message):
-    
+    try:
         result = collect_chats()
         for x in result:
             msg = check_messages(x[2])
@@ -296,7 +296,8 @@ async def check_message(message: types.Message):
             await message.answer(x[2])
             await message.answer('#'*20)
             await asyncio.sleep(1) 
-   
+    except Exception as e:
+        await message.answer(e)
 
 class Msg_states(StatesGroup):
     link = State()
