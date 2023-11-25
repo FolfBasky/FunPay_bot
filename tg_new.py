@@ -274,7 +274,6 @@ async def register_account_(message: types.Message, state: FSMContext):
 async def register_account_(message: types.Message):
     await message.answer('Invalid data! Enter correct code!')
 
-
 async def vk_keys(message: types.Message):
     await message.answer('VK module', reply_markup=keyboard_vk)
     #await message.answer(message.chat.id)
@@ -285,6 +284,15 @@ async def tor_keys(message: types.Message):
 async def main_page(message: types.Message):
     if message.from_user.id == admin_id:
         await message.answer('main page', reply_markup=keyboard_main)
+
+
+
+# will continue
+class Groups_list(StatesGroup):
+    enter_new_group = State()
+
+async def set_groups_list(message: types.Message):
+    ...
 
 async def check_message(message: types.Message):
     try:
