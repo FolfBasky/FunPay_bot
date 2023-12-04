@@ -170,9 +170,9 @@ def main_photo(personally_token, link, captcha_key='',captcha_sid=''):
     except:
         return True
 
-def edit_group_info(personally_token, link, lock_mode: int = 1,captcha_key='',captcha_sid=''):
-    # lock_mode = 1: free group access; = 2: private groups access;
-    access = 3 if lock_mode == 2 else 0
+def edit_group_info(personally_token, link, lock_mode,captcha_key='',captcha_sid=''):
+    print(lock_mode)
+    access = 2 if lock_mode == 1 else 0 # 0 - free; 2 - private
     response = requests.get('https://api.vk.com/method/groups.edit?',
         params = {
         'access_token': personally_token,
