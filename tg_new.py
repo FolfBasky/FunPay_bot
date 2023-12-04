@@ -102,7 +102,7 @@ async def process_callback_button1(callback_query: types.CallbackQuery):
 @dp.message_handler(commands='confirm', state=Clear_groups_states.select_mode)
 async def clear_groups(message: types.Message, state: FSMContext):
     global mode_clear_groups
-    access = 'private' if mode_clear_groups.mode == 2 else 'free'
+    access = 'private' if mode_clear_groups.mode == 1 else 'free'
     try:
         await message.answer('Start clearing... Mode: ' + access, reply_markup=keyboard_vk)
         accs = select_all_vk_profiles()
