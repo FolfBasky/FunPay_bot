@@ -173,6 +173,7 @@ def main_photo(personally_token, link, captcha_key='',captcha_sid=''):
 def edit_group_info(personally_token, link, lock_mode,captcha_key='',captcha_sid=''):
     print(lock_mode)
     access = 2 if lock_mode == 1 else 0 # 0 - free; 2 - private
+    print(access)
     response = requests.get('https://api.vk.com/method/groups.edit?',
         params = {
         'access_token': personally_token,
