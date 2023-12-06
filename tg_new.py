@@ -829,7 +829,7 @@ def message_handelers_registers(dp: Dispatcher):
     dp.register_message_handler(change_kef, commands="change_kef")
     dp.register_message_handler(check_ip_r, commands="check_ip")
     dp.register_message_handler(main_page, commands="main")
-    dp.register_message_handler(off_pc, commands="off_pc")
+    dp.register_message_handler(off_pc, commands="off_pcc")
     dp.register_message_handler(posting, commands="post")
     dp.register_message_handler(tor_keys, commands="tor")
     dp.register_message_handler(vk_keys, commands="vk")
