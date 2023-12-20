@@ -202,30 +202,27 @@ def check_messages(url):
 
 def message_answer_r(url, text):
 
-    try:
-        text = text.replace('\n', ' ')
-        response = session.get(url)
-        soup = BeautifulSoup(response.text, 'lxml')
-        csrf_token = soup.find('body',class_='bg-light-color')['data-app-data'].split(',')[1].split(':')[1].replace('"', '')
-        data_orders = soup.find_all('div',class_='hidden')[2]['data-orders']
-        data_id_cpu = soup.find('div',{'class':['param-item chat-panel hidden', 'param-item chat-panel']})['data-id']
-        data_tag_cpu = soup.find('div',{'class':['param-item chat-panel hidden', 'param-item chat-panel']})['data-tag']
-        last_message_id = soup.find_all('div', class_='chat-msg-item')[-1].attrs['id'].split('-')[1]
-        data_tag = soup.find_all('div', class_='chat chat-float')[0]['data-tag']
-        data_user = soup.find_all('div', class_='chat chat-float')[0]['data-user']
-        data_tag_book = soup.find_all('div', class_='chat chat-float')[0]['data-bookmarks-tag']
-        data_node_book = f'users-{data_id_cpu}-{data_user}'
-        data = {
-            'objects': '[{{"type":"orders_counters","id":"{}","tag":"{}","data":false}},{{"type":"chat_node","id":"{}","tag":"{}","data":{{"node":"{}","last_message":{},"content":"{}"}},{{"type":"chat_bookmarks","id":"{}","tag":"{}","data":false}},{{"type":"c-p-u","id":"{}","tag":"{}","data":false}}]'.format(data_user, data_orders, data_node_book, data_tag, data_node_book, last_message_id, text, data_user, data_tag_book, data_id_cpu, data_tag_cpu),
-            'request': '{{"action":"chat_message","data":{{"node":"{}","last_message":{},"content":"{}" }}}}'.format(data_node_book, last_message_id, text),
-            'csrf_token': csrf_token
-        }
-    except: pass
-
-
-    '[{"type":"orders_counters","id":"9044872","tag":"v0vne9vp","data":false},{"type":"chat_node","id":"users-2513395-9044872","tag":"1vogeql6","data":{"node":"users-2513395-9044872","last_message":1763986514,"content":"я+пока+просто+смотрю"}},{"type":"chat_bookmarks","id":"9044872","tag":"jzlv8co5","data":false},{"type":"c-p-u","id":"2513395","tag":"61ydh6qi","data":false}]'
-    '{"action":"chat_message","data":{"node":"users-2513395-9044872","last_message":1763986514,"content":"я+пока+просто+смотрю"}}'
-
+   
+    text = text.replace('\n', ' ')
+    response = session.get(url)
+    soup = BeautifulSoup(response.text, 'lxml')
+    csrf_token = soup.find('body',class_='bg-light-color')['data-app-data'].split(',')[1].split(':')[1].replace('"', '')
+    data_orders = soup.find_all('div',class_='hidden')[2]['data-orders']
+    data_id_cpu = soup.find('div',{'class':['param-item chat-panel hidden', 'param-item chat-panel']})['data-id']
+    data_tag_cpu = soup.find('div',{'class':['param-item chat-panel hidden', 'param-item chat-panel']})['data-tag']
+    last_message_id = soup.find_all('div', class_='chat-msg-item')[-1].attrs['id'].split('-')[1]
+    data_tag = soup.find_all('div', class_='chat chat-float')[0]['data-tag']
+    data_user = soup.find_all('div', class_='chat chat-float')[0]['data-user']
+    data_tag_book = soup.find_all('div', class_='chat chat-float')[0]['data-bookmarks-tag']
+    data_node_book = f'users-{data_user}-{data_id_cpu}'
+    data = {
+        'objects': '[{{"type":"orders_counters","id":"{}","tag":"{}","data":false}},{{"type":"chat_node","id":"{}","tag":"{}","data":{{"node":"{}","last_message":{},"content":"{}"}},{{"type":"chat_bookmarks","id":"{}","tag":"{}","data":false}},{{"type":"c-p-u","id":"{}","tag":"{}","data":false}}]'.format(data_user, data_orders, data_node_book, data_tag, data_node_book, last_message_id, text, data_user, data_tag_book, data_id_cpu, data_tag_cpu),
+        'request': '{{"action":"chat_message","data":{{"node":"{}","last_message":{},"content":"{}" }}}}'.format(data_node_book, last_message_id, text),
+        'csrf_token': csrf_token
+    }
+    '''objects	'[{"type":"orders_counters","id":"9289345","tag":"tlnt8fdh","data":false},{"type":"chat_node","id":"users-9289345-9346597","tag":"0gxf43pg","data":{"node":"users-9289345-9346597","last_message":1804946130,"content":"Здравствуйте"}},{"type":"chat_bookmarks","id":"9289345","tag":"v1cb32bw","data":false},{"type":"c-p-u","id":"9346597","tag":"ywwr5xsf","data":false}]'
+    request	'{"action":"chat_message","data":{"node":"users-9289345-9346597","last_message":1804946130,"content":"Здравствуйте"}}'
+    csrf_token	"a03qjntvyki5oben"'''
     headers = {
         'Accept':'application/json, text/javascript, */*; q=0.01',
         'Content-Type':'application/x-www-form-urlencoded; charset=UTF-8',
