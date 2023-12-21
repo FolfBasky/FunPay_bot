@@ -200,7 +200,7 @@ def check_messages(url):
 
     return all_message
 
-def message_answer_r(url, text):
+def message_answer_r(url, text, V=1):
 
    
     text = text.replace('\n', ' ')
@@ -214,15 +214,14 @@ def message_answer_r(url, text):
     data_tag = soup.find_all('div', class_='chat chat-float')[0]['data-tag']
     data_user = soup.find_all('div', class_='chat chat-float')[0]['data-user']
     data_tag_book = soup.find_all('div', class_='chat chat-float')[0]['data-bookmarks-tag']
-    data_node_book = f'users-{data_user}-{data_id_cpu}'
+    if V == 1: data_node_book = f'users-{data_user}-{data_id_cpu}'
+    else: data_node_book = f'users-{data_id_cpu}-{data_user}'
     data = {
         'objects': '[{{"type":"orders_counters","id":"{}","tag":"{}","data":false}},{{"type":"chat_node","id":"{}","tag":"{}","data":{{"node":"{}","last_message":{},"content":"{}"}},{{"type":"chat_bookmarks","id":"{}","tag":"{}","data":false}},{{"type":"c-p-u","id":"{}","tag":"{}","data":false}}]'.format(data_user, data_orders, data_node_book, data_tag, data_node_book, last_message_id, text, data_user, data_tag_book, data_id_cpu, data_tag_cpu),
         'request': '{{"action":"chat_message","data":{{"node":"{}","last_message":{},"content":"{}" }}}}'.format(data_node_book, last_message_id, text),
         'csrf_token': csrf_token
     }
-    '''objects	'[{"type":"orders_counters","id":"9289345","tag":"tlnt8fdh","data":false},{"type":"chat_node","id":"users-9289345-9346597","tag":"0gxf43pg","data":{"node":"users-9289345-9346597","last_message":1804946130,"content":"Здравствуйте"}},{"type":"chat_bookmarks","id":"9289345","tag":"v1cb32bw","data":false},{"type":"c-p-u","id":"9346597","tag":"ywwr5xsf","data":false}]'
-    request	'{"action":"chat_message","data":{"node":"users-9289345-9346597","last_message":1804946130,"content":"Здравствуйте"}}'
-    csrf_token	"a03qjntvyki5oben"'''
+   
     headers = {
         'Accept':'application/json, text/javascript, */*; q=0.01',
         'Content-Type':'application/x-www-form-urlencoded; charset=UTF-8',
@@ -231,7 +230,9 @@ def message_answer_r(url, text):
     }
     response = session.post(url='https://funpay.com/runner/', data=data, headers=headers)
     if response.json()['response']['error'] == None: return 'Message was sended'
-    else: return response.json()['response']
+    else: 
+        if V == 2: return response.json()['response']['error']
+        return message_answer_r(url,text,V=2)
  
 def create_lot(personally_token,groups_data,deleted = "", offer_id:str = '0'):
     ds_list = [['🎁ГРУППА VK','ПОДПИСЧИКОВ🎁 ✅ПОД ВАШУ ТЕМАТИКУ✅БЕЗ БАНА✅ПЕРЕДАЧА ПРАВ ВЛАДЕЛЬЦА✅🎁']]
