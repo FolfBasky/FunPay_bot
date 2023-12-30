@@ -188,7 +188,7 @@ def get_first_active_account_vk_info():
         }
     return result
 
-def create_user_profit_table():
+'''def create_user_profit_table():
     with sqlite3.connect('user_profiles.db') as conn:
         cursor = conn.cursor()
         create_table = """
@@ -270,13 +270,13 @@ def select_profit_table(id):
         print("Ошибка при работе с SQLite", error)
     finally:
         if (conn):
-            conn.close()
+            conn.close()'''
 
 
 # Create the user profiles table
 create_user_profiles_table()
 create_vk_base()
-create_user_profit_table()
+'''create_user_profit_table()'''
 if __name__ == "__main__":
    pass
    """ # Test the functions
