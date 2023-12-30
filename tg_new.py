@@ -62,9 +62,6 @@ async def cmd(message: types.Message, state: FSMContext):
     await message.answer('Not correct answer!')
     await state.finish()
 
-
-
-
 class Clear_groups_states(StatesGroup):
     select_mode = State()
     mode = 1
@@ -125,7 +122,6 @@ async def clear_groups(message: types.Message, state: FSMContext):
         await message.answer(e)
     finally:
         await state.finish()
-
 
 class Start_states(StatesGroup):
     choice = State()
@@ -222,14 +218,10 @@ async def register_account_(message: types.Message, state: FSMContext):
             await message.answer('Creating account! Wait...')
             if not register_account(nickname, email, password): raise Exception
             else: await message.answer('Account was succesfully created!')
-        
-        
             data['phone'] = message.text
             if not add_user_profile(1,email, password, data['phone']): raise Exception
 
         await message.answer('Data was succesfully writed! Enter link from email:')
-
-        
 
     except Exception as e:
         await message.answer(e)

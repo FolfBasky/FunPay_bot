@@ -201,8 +201,6 @@ def check_messages(url):
     return all_message
 
 def message_answer_r(url, text, V=1):
-
-   
     text = text.replace('\n', ' ')
     response = session.get(url)
     soup = BeautifulSoup(response.text, 'lxml')
@@ -235,7 +233,7 @@ def message_answer_r(url, text, V=1):
         return message_answer_r(url,text,V=2)
  
 def create_lot(personally_token,groups_data,deleted = "", offer_id:str = '0'):
-    ds_list = [['🎁ГРУППА VK','ПОДПИСЧИКОВ🎁 ✅ПОД ВАШУ ТЕМАТИКУ✅БЕЗ БАНА✅ПЕРЕДАЧА ПРАВ ВЛАДЕЛЬЦА✅🎁']]
+    ds_list = [['☑️ VK СООБЩЕСТВО - 🔥🌩️ СООБЩЕСТВО ДЛЯ СТАРТА (',' ПОДПИСЧИКОВ) 🔥🌩️ БЫСТРО 🔥🌩️ ГАРАНТИЯ 100%☑️']]
     #['🔥Живой паблик','подписчиков 🔥СООБЩЕСТВО ДЛЯ СТАРТА🔥БЕЗ БЛОКИРОВКИ 🔥'],
     #['Вк группа под смену тематики/ высшее качество 🔥', 'подписчиков']]
     describe = random.choice(ds_list)

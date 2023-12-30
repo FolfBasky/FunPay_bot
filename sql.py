@@ -188,10 +188,95 @@ def get_first_active_account_vk_info():
         }
     return result
 
+def create_user_profit_table():
+    with sqlite3.connect('user_profiles.db') as conn:
+        cursor = conn.cursor()
+        create_table = """
+            CREATE TABLE IF NOT EXISTS user_profiles (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                summa INTEGER,
+                date TIMESTAMP,
+            );
+        """
+        cursor.execute(create_table)
+
+def add_profit_table(summa, date):
+    try:
+        with sqlite3.connect('user_profiles.db') as conn:
+            cursor = conn.cursor()
+            cursor.execute("INSERT INTO user_profiles (summa, date) VALUES (?, ?)", (summa, date))
+            conn.commit()
+    except sqlite3.Error as error:
+        print("Ошибка при работе с SQLite", error)
+    finally:
+        if (conn):
+            conn.close()
+
+def delete_profit_table(id):
+    try:
+        with sqlite3.connect('user_profiles.db') as conn:
+            cursor = conn.cursor()
+            cursor.execute("DELETE FROM user_profiles WHERE id = ?", (id,))
+            conn.commit()
+    except sqlite3.Error as error:
+        print("Ошибка при работе с SQLite", error)
+    finally:
+        if (conn):
+            conn.close()
+
+def select_profit_table(id):
+    try:
+        with sqlite3.connect('user_profiles.db') as conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT * FROM user_profiles WHERE id = ?", (id,))
+            return cursor.fetchone()
+    except sqlite3.Error as error:
+        print("Ошибка при работе с SQLite", error)
+    finally:
+        if (conn):
+            conn.close()
+
+def add_profit_table(summa, date):
+    try:
+        with sqlite3.connect('user_profiles.db') as conn:
+            cursor = conn.cursor()
+            cursor.execute("INSERT INTO user_profiles (summa, date) VALUES (?, ?)", (summa, date))
+            conn.commit()
+    except sqlite3.Error as error:
+        print("Ошибка при работе с SQLite", error)
+    finally:
+        if (conn):
+            conn.close()
+
+def delete_profit_table(id):
+    try:
+        with sqlite3.connect('user_profiles.db') as conn:
+            cursor = conn.cursor()
+            cursor.execute("DELETE FROM user_profiles WHERE id = ?", (id,))
+            conn.commit()
+    except sqlite3.Error as error:
+        print("Ошибка при работе с SQLite", error)
+    finally:
+        if (conn):
+            conn.close()
+
+def select_profit_table(id):
+    try:
+        with sqlite3.connect('user_profiles.db') as conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT * FROM user_profiles WHERE id = ?", (id,))
+            return cursor.fetchone()
+    except sqlite3.Error as error:
+        print("Ошибка при работе с SQLite", error)
+    finally:
+        if (conn):
+            conn.close()
+
 
 # Create the user profiles table
 create_user_profiles_table()
 create_vk_base()
+create_user_profit_table()
 if __name__ == "__main__":
    pass
    """ # Test the functions
