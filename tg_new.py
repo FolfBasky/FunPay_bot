@@ -340,7 +340,7 @@ async def up(message: types.Message):
     await message.answer(up_lots())
 
 async def auto(message: types.Message):
-    storage_last_message = {}
+    storage_last_message = set()
     global auto_while
     auto_while = True
     message_counter = 0
@@ -353,6 +353,8 @@ async def auto(message: types.Message):
                 change_k(kef*0.9)
                 await message.answer('Price is down')
                 await message.answer(f'{kef=}')
+                await delete_slotes(message=message)
+                await create_slotes(message=message)
             else:
                 message_counter = 0
         try:
