@@ -864,4 +864,7 @@ def message_handelers_registers(dp: Dispatcher):
 
 if __name__ == '__main__':
     message_handelers_registers(dp)
-    executor.start_polling(dp, skip_updates=True, on_startup=on_startup, allowed_updates=True)
+    try:
+        executor.start_polling(dp, skip_updates=True, on_startup=on_startup, allowed_updates=True)
+    except Exception as e:
+        print(e)
