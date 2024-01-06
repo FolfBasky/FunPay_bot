@@ -380,7 +380,7 @@ async def auto(message: types.Message):
             if x[1] in storage_last_message:
                 break
             else:
-                storage_last_message += x[1]
+                storage_last_message.add(x[1])
                 await message.answer(f'{x[2]} : {x[0]}')
                 await message.answer(x[1])
                 await message.answer('#'*20)
