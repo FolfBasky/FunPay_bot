@@ -50,7 +50,7 @@ async def change_kef(message: types.Message):
     await Kef_states.enter_kef.set()
 
 @dp.message_handler(lambda message: message.text.replace('.','').isdigit(), state=Kef_states.enter_kef) 
-async def cmd(message: types.Message, state: FSMContext):
+async def kef_changing(message: types.Message, state: FSMContext):
     change_k(message.text)
     global kef
     kef = float(message.text)
@@ -340,10 +340,21 @@ async def up(message: types.Message):
     await message.answer(up_lots())
 
 async def auto(message: types.Message):
-    storage_last_message = []
+    storage_last_message = {}
     global auto_while
     auto_while = True
+    message_counter = 0
+    t_start = time.time()
     while auto_while:
+        if time.time() - t_start >= 60*60*24:
+            t_start = time.time()
+            await message.answer(f'Today was {message_counter} messages getting.')
+            if message_counter == 0:
+                change_k(kef*0.9)
+                await message.answer('Price is down')
+                await message.answer(f'{kef=}')
+            else:
+                message_counter = 0
         try:
             lst = up_lots()
         except requests.ConnectionError:
@@ -364,10 +375,11 @@ async def auto(message: types.Message):
             if x[1] in storage_last_message:
                 break
             else:
-                storage_last_message.append(x[1])
+                storage_last_message += x[1]
                 await message.answer(f'{x[2]} : {x[0]}')
                 await message.answer(x[1])
                 await message.answer('#'*20)
+                message_counter += 1
         await asyncio.sleep(20)
 
 async def create_slotes(message: types.Message):
