@@ -363,13 +363,16 @@ async def auto(message: types.Message):
             await auto()
         if 'Slot' in lst: await message.answer(lst)
         elif 'Fail' == lst:
-            await message.answer('Session was down\nWaiting...')
-            if not (result := logging_()): 
-                await message.answer('Session is working')
-            else:
-                await message.answer(result)
-                await asyncio.sleep(5*60)
-                await auto(message)
+            try:
+                await message.answer('Session was down\nWaiting...')
+                if not (result := logging_()): 
+                    await message.answer('Session is working')
+                else:
+                    await message.answer(result)
+                    await asyncio.sleep(5*60)
+                    await auto(message)
+            except Exception as e:
+                await message.answer(e)
         last_msgs = collect_chats()[:5]
         for x in last_msgs:
             if x[1] in storage_last_message:
