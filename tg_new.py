@@ -341,6 +341,7 @@ async def up(message: types.Message):
 
 async def auto(message: types.Message):
     storage_last_message = set()
+    storage_nicknames = set()
     global auto_while
     auto_while = True
     message_counter = 0
@@ -384,7 +385,9 @@ async def auto(message: types.Message):
                 await message.answer(f'{x[2]} : {x[0]}')
                 await message.answer(x[1])
                 await message.answer('#'*20)
-                message_counter += 1
+                if x[0] not in storage_nicknames:
+                    storage_nicknames.add(x[0])
+                    message_counter += 1
         await asyncio.sleep(20)
 
 async def create_slotes(message: types.Message):

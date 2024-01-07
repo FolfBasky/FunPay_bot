@@ -156,6 +156,7 @@ def set_valute():
 
 
 def collect_chats():
+    'username, last_msg, link'
     response = session.get(url='https://funpay.com/chat/')
     soup = BeautifulSoup(response.text, 'lxml')
     result = []
