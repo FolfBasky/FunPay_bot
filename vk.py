@@ -82,7 +82,7 @@ def count_subscribers(link):
         })
     try:
         count_sub = (response.json()['response']['count'])
-        if count_sub > 6000 and count_sub < 100000: return(count_sub)
+        if count_sub > 500 and count_sub < 100000: return(count_sub)
     except:
         pass
 
