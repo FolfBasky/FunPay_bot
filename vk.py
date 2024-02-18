@@ -484,9 +484,9 @@ def delete_messages(group_id, peer_id,*,captcha_key=None,captcha_sid=None):
 
 def main_delete_messages():
     for gr in groups().keys():
-        print(gr)
+        #print(gr)
         data = get_messages(int(gr))
-        print(len(data))
+        #print(len(data))
         for peer_id in data:
             delete_messages(gr, peer_id)
 

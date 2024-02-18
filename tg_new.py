@@ -100,19 +100,19 @@ async def process_callback_button1(callback_query: types.CallbackQuery):
 async def clear_groups(message: types.Message, state: FSMContext):
     global mode_clear_groups
     access = 'private' if mode_clear_groups.mode == 1 else 'free'
-    try:
-        await message.answer('Start clearing... Mode: ' + access, reply_markup=keyboard_vk)
-        accs = select_all_vk_profiles()
-        for acc in accs:
-            set_active_status_vk_accounts()
-            choice_active_status_vk_account(acc['login'])
-            group = [x for x in groups().keys()]  
-            response = lock_all(group, lock_mode = mode_clear_groups.mode)
-            await message.answer(f'On the account {acc["login"]}: {response.lower()}')
-    except Exception as e:
-        await message.answer(e)
-    finally:
-        await state.finish()
+    #try:
+    await message.answer('Start clearing... Mode: ' + access, reply_markup=keyboard_vk)
+    accs = select_all_vk_profiles()
+    for acc in accs:
+        set_active_status_vk_accounts()
+        choice_active_status_vk_account(acc['login'])
+        group = [x for x in groups().keys()]  
+        response = lock_all(group, lock_mode = mode_clear_groups.mode)
+        await message.answer(f'On the account {acc["login"]}: {response.lower()}')
+    #except Exception as e:
+    #    await message.answer(e)
+    #finally:
+    #    await state.finish()
 
 @dp.message_handler(commands='back', state=Clear_groups_states.select_mode)
 async def clear_groups(message: types.Message, state: FSMContext):
