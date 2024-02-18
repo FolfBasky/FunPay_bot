@@ -656,8 +656,6 @@ def pass_the_test_code(code):
         response = session.post('https://funpay.com/account/phoneVerification',data=data_n, headers=headers)
     except:
         pass
-    finally:
-        del data_n, headers
     
     if response.json()['error']: return True
     else: return response.json()['error']
