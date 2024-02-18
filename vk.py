@@ -292,7 +292,7 @@ def delete_posts_from_group(personally_token, link):
         try:
             error = response.json()['error']['error_msg']
             print(error)
-            return 
+            break 
         except:
             pass
         response = response.json()['response']
