@@ -216,9 +216,11 @@ async def register_account_(message: types.Message, state: FSMContext):
             password = generate_random_string(4)
             nickname = data['nickname']
             await message.answer('Creating account! Wait...')
-            r = None
-            while not rr:
-                rr = register_account(nickname, email, password)
+            if not register_account(nickname, email, password):
+                await message.answer('Something was wrong. Wait...')
+                if not register_account(nickname, email, password): 
+                    await message.answer('Errors')
+                    return
             else: await message.answer('Account was succesfully created!')
             data['phone'] = message.text
             if not add_user_profile(1,email, password, data['phone']): raise Exception
@@ -260,8 +262,14 @@ async def register_account_(message: types.Message):
 @dp.message_handler(lambda message: message.text.isdigit(),state=RegisterAccountStates.code)
 async def register_account_(message: types.Message, state: FSMContext):
     result = pass_the_test_code(message.text)
-    if result == True : await message.answer('Phone was succesfully confirmed!')
-    else: await message.answer('Something was wrong! ' + result)
+    if result: await message.answer('Phone was succesfully confirmed!')
+    else:
+        await message.answer('Something was wrong! ')
+        await message.answer('We will try again!')
+        result = pass_the_test_code(message.text)
+        if not result:
+            await message.answer('Errors')
+            return
     await state.finish()
 
 @dp.message_handler(state=RegisterAccountStates.code)
