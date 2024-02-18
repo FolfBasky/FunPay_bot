@@ -216,7 +216,9 @@ async def register_account_(message: types.Message, state: FSMContext):
             password = generate_random_string(4)
             nickname = data['nickname']
             await message.answer('Creating account! Wait...')
-            if not register_account(nickname, email, password): raise Exception
+            r = None
+            while not rr:
+                rr = register_account(nickname, email, password)
             else: await message.answer('Account was succesfully created!')
             data['phone'] = message.text
             if not add_user_profile(1,email, password, data['phone']): raise Exception
