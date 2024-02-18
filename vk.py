@@ -288,7 +288,14 @@ def delete_posts_from_group(personally_token, link):
             'domain' : link,
             'v': version,
             }
-            ).json()['response']
+            )
+        try:
+            error = response.json()['error']['error_msg']
+            print(error)
+            return 
+        except:
+            pass
+        response = response.json()['response']
         for i in range(response['count']):
             if i == 100: break
             else: data.append(response['items'][i]['id'])
