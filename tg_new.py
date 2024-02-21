@@ -308,7 +308,7 @@ async def check_message(message: types.Message):
             await message.answer('#'*20)
             await asyncio.sleep(1) 
     except Exception as e:
-        await message.answer(e)
+        await message.answer(e, len(msg))
 
 class Msg_states(StatesGroup):
     link = State()
