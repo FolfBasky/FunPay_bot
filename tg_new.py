@@ -301,14 +301,14 @@ async def check_message(message: types.Message):
         result = collect_chats()
         for x in result:
             msg = check_messages(x[2])
-            for part_msg_index in range(0,len(msg),2000):
-                part_msg = msg[part_msg_index:part_msg_index+2000]
-                await message.answer('\n'.join(part_msg))
+            for part_msg_index in range(0,len(msg),3000):
+                part_msg = msg[part_msg_index:part_msg_index+3000]
+                await message.answer(part_msg)
             await message.answer(x[2])
             await message.answer('#'*20)
             await asyncio.sleep(1) 
     except Exception as e:
-        await message.answer(e + str(len(msg)))
+        await message.answer(e)
 
 class Msg_states(StatesGroup):
     link = State()

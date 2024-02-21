@@ -199,7 +199,7 @@ def check_messages(url):
         except:
             pass
 
-    return all_message
+    return ''.join(all_message)
 
 def message_answer_r(url, text, V=1):
     text = text.replace('\n', ' ')
