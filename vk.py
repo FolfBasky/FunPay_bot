@@ -8,6 +8,7 @@ from sql import get_first_active_account_vk_info, set_active_status_vk_accounts,
 from tqdm import tqdm
 import time
 from bs4 import BeautifulSoup
+from random_word import Words
 
 def randomword(length):
    letters = string.ascii_lowercase
@@ -311,8 +312,6 @@ def delete_posts_from_group(personally_token, link):
         )
 
 def lock_all(links, lock_mode):
-    from random_word import Words
-    
     personally_token, _ = get_data()
     for link in links:
         global ex

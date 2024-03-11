@@ -455,7 +455,7 @@ async def check_orders(message: types.Message):
 
 async def check_lots(message: types.Message):
     d = check_lots_r()
-    for x in d.keys():
+    for x in sorted(d.keys()):
         await message.answer(f'{d[x]}\n{x}')
         await asyncio.sleep(0.5)
 
