@@ -234,7 +234,7 @@ def message_answer_r(url, text, V=1):
         return message_answer_r(url,text,V=2)
  
 def create_lot(personally_token,groups_data,deleted = "", offer_id:str = '0'):
-    ds_list = [['☑️ VK СООБЩЕСТВО - 🔥🌩️ СООБЩЕСТВО ДЛЯ СТАРТА (',' ПОДПИСЧИКОВ) 🔥🌩️ БЫСТРО 🔥🌩️ ГАРАНТИЯ 100%☑️']]
+    ds_list = [['💎[ЛУЧШАЯ ЦЕНА] ВКОНТАКТЕ ГРУППА',  ' ПОДПИСЧИКОВ, БЕЗ ОТПИСОК, ГАРАНТИЯ💎']]
     #['🔥Живой паблик','подписчиков 🔥СООБЩЕСТВО ДЛЯ СТАРТА🔥БЕЗ БЛОКИРОВКИ 🔥'],
     #['Вк группа под смену тематики/ высшее качество 🔥', 'подписчиков']]
     describe = random.choice(ds_list)
