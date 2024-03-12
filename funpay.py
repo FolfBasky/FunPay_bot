@@ -285,7 +285,7 @@ def create_lot(personally_token,groups_data,deleted = "", offer_id:str = '0'):
         response = session.post(url='https://funpay.com/lots/offerSave',data=data, headers=headers1)
         if response.status_code != 200 and 'done' not in response.text[:50]:
             return 'Fail'
-        time.sleep(3)
+        time.sleep(random.randint(1,5))
         
     return 'Slots was created!'
 
