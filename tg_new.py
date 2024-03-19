@@ -296,6 +296,11 @@ class Groups_list(StatesGroup):
 async def set_groups_list(message: types.Message):
     ...
 
+
+
+
+
+
 async def check_message(message: types.Message):
     try:
         result = collect_chats()

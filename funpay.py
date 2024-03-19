@@ -194,7 +194,7 @@ def check_messages(url):
             except:
                 text = x.contents[1::2][0].text.strip()
             
-            all_message.append(f'{username} ({date})')
+            all_message.append(f'{username} ({date})'.center(20,'_'))
             all_message.append(text)
         except:
             pass
