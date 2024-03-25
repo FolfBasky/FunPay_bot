@@ -22,7 +22,7 @@ def get_data():
     user_id = data['user_id']
     return access_token, user_id
 
-version = '5.131'
+version = '5.199'
 
 def captcha_solved():
     api_key = '9202b639f977797ed5b756b0c3af9327'
@@ -286,7 +286,7 @@ def delete_posts_from_group(personally_token, link):
             'access_token': personally_token,
             'count':100,
             'owner_id':-link,
-            'domain' : link,
+            #'domain' : link,
             'v': version,
             }
             )
@@ -315,6 +315,7 @@ def lock_all(links, lock_mode):
     personally_token, _ = get_data()
     for link in links:
         global ex
+        print(link)
         ex = Words()
         if not ex.status: 
             return 'Generate photos error'
